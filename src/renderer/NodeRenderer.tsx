@@ -4,6 +4,11 @@ import { RegistryContext, type Registry } from "./RegistryContext";
 import { GenericNode } from "./GenericNode";
 import { selectNode, type RootState } from "../graph/selectors";
 
+/**
+ * Render a node by looking up its `type` in the active registry. Falls back
+ * to `GenericNode` when the type isn't registered or the node id is unknown
+ * — so the tree always renders something inspectable, even mid-build.
+ */
 export function NodeRenderer({ nodeId }: { nodeId: string }) {
   const node = useSelector((state: RootState) => selectNode(state, nodeId));
   const registry = useContext(RegistryContext);
@@ -16,7 +21,12 @@ export function NodeRenderer({ nodeId }: { nodeId: string }) {
   return <Component nodeId={nodeId} />;
 }
 
-// Nested override: merges a partial registry on top of the surrounding one.
+/**
+ * Layer extra/replacement components onto the surrounding registry for the
+ * children of this provider. Useful for context-specific rendering (e.g. a
+ * read-only variant inside a preview pane) without rebuilding the whole
+ * registry.
+ */
 export function RegistryOverride({
   overrides,
   children,

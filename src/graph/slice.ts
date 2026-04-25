@@ -20,31 +20,45 @@ const graphSlice = createSlice({
   name: "graph",
   initialState,
   reducers: {
+    /**
+     * Insert a node into the dictionary. Idempotent: re-adding the same id is
+     * a no-op (so JSON-LD re-imports don't clobber existing state).
+     */
     addNode(state, action: PayloadAction<AddNodePayload>) {
       const { id } = action.payload;
-      // No-op on duplicate add. Idempotent for re-imports.
       if (state.nodes[id]) return;
       state.nodes[id] = { ...action.payload } as GraphNode;
     },
 
+    /**
+     * Patch properties on an existing node (Object.assign-style merge). No-op
+     * if the node doesn't exist. `id` and `type` are stripped from the
+     * payload — type is structural and shouldn't drift mid-life.
+     */
     updateNode(state, action: PayloadAction<UpdateNodePayload>) {
       const { id, ...updates } = action.payload;
       const node = state.nodes[id];
       if (!node) return;
-      // `id` and `type` are intentionally not part of UpdateNodePayload's
-      // contract for mutation, but the index signature lets them slip through.
-      // Strip them defensively.
       delete (updates as Record<string, unknown>).id;
       delete (updates as Record<string, unknown>).type;
       Object.assign(node, updates);
     },
 
+    /**
+     * Drop a node from the dictionary. Does NOT garbage-collect inbound link
+     * references — selectors filter dangling ids when reading. Reverse-index
+     * cleanup is an application concern (e.g. a thunk).
+     */
     deleteNode(state, action: PayloadAction<DeleteNodePayload>) {
       delete state.nodes[action.payload.id];
-      // Dangling references are left in place. Selectors filter them.
-      // Cleanup is an application-level concern (thunk + reverse index).
     },
 
+    /**
+     * Append (or insert) a link in `node[property]`. Creates the array if it
+     * doesn't exist. With `at.index`, splices into that position (clamped to
+     * `[0, length]`); without, pushes at the end. No-op if the source node
+     * doesn't exist.
+     */
     insertLink(state, action: PayloadAction<InsertLinkPayload>) {
       const { targetId, at } = action.payload;
       const node = state.nodes[at.nodeId];
@@ -63,6 +77,11 @@ const graphSlice = createSlice({
       }
     },
 
+    /**
+     * Remove one entry from a link array. Either `at.index` (positional) or
+     * `targetId` (first match wins) identifies the entry; both forms remove a
+     * single slot. Does NOT delete the target node — only the reference here.
+     */
     removeLink(state, action: PayloadAction<RemoveLinkPayload>) {
       const { at, targetId } = action.payload;
       const node = state.nodes[at.nodeId];
@@ -83,6 +102,11 @@ const graphSlice = createSlice({
       }
     },
 
+    /**
+     * Replace or merge the @context. With `merge: true`, the new context
+     * overlays onto the existing one (later entries win); otherwise the
+     * context is replaced wholesale.
+     */
     setContext(state, action: PayloadAction<SetContextPayload>) {
       const { context, merge } = action.payload;
       state.context = merge ? mergeContexts(state.context, context) : context;
@@ -99,5 +123,6 @@ export const {
   setContext,
 } = graphSlice.actions;
 
+/** The graph reducer — plug into a Redux store under any key (we use `graph`). */
 export const graphReducer = graphSlice.reducer;
 export default graphSlice.reducer;

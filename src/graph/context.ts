@@ -1,9 +1,11 @@
 import type { JsonLdContext, ContextEntry } from "./types";
 
-// A property is a link only if the @context says so (`@type: @id`). Arrays of
-// values are NOT assumed to be links — an array might just be a list of
-// strings, numbers, etc. Links *must* be in arrays (even singletons), but the
-// inverse is not true.
+/**
+ * Decide whether a property is a link (vs a literal). Links are explicitly
+ * declared in the @context as `"@id"` or `{ "@type": "@id" }`. The shape of
+ * the value alone isn't enough — a string-array might be a literal list, not
+ * a list of node ids.
+ */
 export function isLinkProperty(
   context: JsonLdContext,
   property: string,
@@ -15,8 +17,12 @@ export function isLinkProperty(
   return false;
 }
 
-// Container semantics — affects whether order matters. The reducer doesn't
-// care, but consumers (sort selectors, equality checks) might.
+/**
+ * Whether a link array's order is semantically meaningful. Defaults to true
+ * (arrays are ordered); an explicit `@container: @set` opts out. The reducer
+ * is order-preserving regardless — this is a hint for consumers (equality
+ * checks, sort UIs).
+ */
 export function isOrderedProperty(
   context: JsonLdContext,
   property: string,
@@ -27,6 +33,11 @@ export function isOrderedProperty(
   return true;
 }
 
+/**
+ * Shallow-merge two contexts; `overlay` entries win on key collision. Used by
+ * `setContext({ merge: true })` and the JSON-LD import path so additive
+ * vocabularies don't clobber what's already declared.
+ */
 export function mergeContexts(
   base: JsonLdContext,
   overlay: JsonLdContext,

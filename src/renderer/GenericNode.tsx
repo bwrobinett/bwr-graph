@@ -1,9 +1,12 @@
 import { useSelector } from "react-redux";
 import { selectNode, type RootState } from "../graph/selectors";
 
-// Fallback when no registry entry matches a node type. In development it
-// shows the type, id, and raw properties — making unimplemented types visible
-// and inspectable. Override per-type to make it disappear.
+/**
+ * Fallback used by `NodeRenderer` when a node's type isn't in the registry,
+ * or when the node id can't be resolved (`missing`). Renders the raw node
+ * shape so unimplemented types are visible and inspectable instead of silent.
+ * Register a real component for the type to replace it.
+ */
 export function GenericNode({
   nodeId,
   missing,
