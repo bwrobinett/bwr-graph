@@ -26,13 +26,15 @@ export interface GraphNode {
   [property: string]: NodePropertyValue;
 }
 
-// JSON-LD-style context. Keyed by property name. A property may be:
+// JSON-LD-style context. Keyed by property name OR a @-prefixed JSON-LD
+// keyword (@vocab, @base, etc.). A term definition may be:
 //   - "@id"     — shorthand for { "@type": "@id" } (links)
+//   - any other string — IRI alias (treated as literal at the term level)
 //   - object form { "@type": "@id" }                — links
 //   - object form { "@container": "@list" | "@set" } — order semantics
 //   - any other shape — treated as literal
 export type ContextEntry =
-  | "@id"
+  | string
   | {
       "@id"?: string;
       "@type"?: "@id" | string;

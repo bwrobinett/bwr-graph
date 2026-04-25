@@ -3,9 +3,6 @@ import { store } from "./store";
 import { RegistryContext } from "./renderer/RegistryContext";
 import { NodeRenderer } from "./renderer/NodeRenderer";
 import { formRegistry } from "./components/registry";
-import { seedDemoGraph } from "./seed";
-
-seedDemoGraph();
 
 export function App() {
   return (
