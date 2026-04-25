@@ -49,11 +49,14 @@ async function main(): Promise<void> {
 
     state.bot.appendMessage("user", line);
 
+    const stopSpinner = startSpinner(state.responderName);
     try {
       const reply = await state.responder(state.bot.getHistory());
+      stopSpinner();
       state.bot.appendMessage("assistant", reply);
       console.log(`[assistant] ${reply}\n`);
     } catch (err) {
+      stopSpinner();
       console.error(`[error] responder failed: ${(err as Error).message}\n`);
     }
   }
@@ -133,6 +136,24 @@ async function handleCommand(line: string, state: CliState): Promise<boolean> {
       console.log(`unknown command: /${cmd} (try /help)\n`);
       return false;
   }
+}
+
+function startSpinner(label: string): () => void {
+  if (!stdout.isTTY) return () => {};
+  const frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+  const start = Date.now();
+  let i = 0;
+  const render = () => {
+    const elapsed = Math.floor((Date.now() - start) / 1000);
+    stdout.write(`\r\x1b[2K${frames[i % frames.length]} ${label} thinking… ${elapsed}s`);
+    i++;
+  };
+  render();
+  const id = setInterval(render, 100);
+  return () => {
+    clearInterval(id);
+    stdout.write("\r\x1b[2K");
+  };
 }
 
 main().catch((err) => {
