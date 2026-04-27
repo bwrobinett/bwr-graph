@@ -10,29 +10,35 @@
 // the inverse is not true — arrays can hold literals (strings, numbers).
 // The @context disambiguates: only properties marked `@type: @id` are links.
 
+/** Stable identifier for a node. Strings so they can carry IRIs or short ids. */
 export type NodeId = string;
 
+/** A leaf value on a node — anything that isn't a link to another node. */
 export type Primitive = string | number | boolean | null;
 
-// Arrays can be either literal values OR node ID references (links). The
-// reducer treats both as `string[]`/`Primitive[]`. The @context disambiguates
-// at the selector layer.
+/**
+ * A node property's value. Arrays are ambiguous at the type level — they may be
+ * link arrays (NodeId[]) or literal arrays (Primitive[]). The @context resolves
+ * the ambiguity at the selector layer; the reducer treats both as plain arrays.
+ */
 export type NodePropertyValue = Primitive | Primitive[] | NodeId[];
 
-// Open-ended: a node has `id`, `type`, and arbitrary properties.
+/**
+ * A graph node. Required keys are `id` and `type`; everything else is open —
+ * literals are stored bare, links are stored as `NodeId[]` (always arrays,
+ * even singletons).
+ */
 export interface GraphNode {
   id: NodeId;
   type: string;
   [property: string]: NodePropertyValue;
 }
 
-// JSON-LD-style context. Keyed by property name OR a @-prefixed JSON-LD
-// keyword (@vocab, @base, etc.). A term definition may be:
-//   - "@id"     — shorthand for { "@type": "@id" } (links)
-//   - any other string — IRI alias (treated as literal at the term level)
-//   - object form { "@type": "@id" }                — links
-//   - object form { "@container": "@list" | "@set" } — order semantics
-//   - any other shape — treated as literal
+/**
+ * One entry in a JSON-LD `@context`. May be a string shorthand or an object
+ * with `@type` / `@container` qualifiers. `"@id"` (string or `@type: "@id"`
+ * object form) marks the property as a link; other shapes are literals.
+ */
 export type ContextEntry =
   | string
   | {
@@ -41,51 +47,75 @@ export type ContextEntry =
       "@container"?: "@list" | "@set";
     };
 
+/**
+ * JSON-LD-style context map. Keys are property names or `@`-prefixed JSON-LD
+ * keywords (`@vocab`, `@base`, …). Used by selectors + JSON-LD I/O to decide
+ * which properties are links and whether order matters.
+ */
 export interface JsonLdContext {
   [propertyName: string]: ContextEntry;
 }
 
+/** Redux slice state — flat node dictionary plus the active context. */
 export interface GraphState {
   nodes: Record<NodeId, GraphNode>;
   context: JsonLdContext;
 }
 
-// Identifies a slot inside a link array.
+/**
+ * Address of a slot inside a link array. `index` is optional — omit to mean
+ * "the end" (insertLink) or "any matching entry" (removeLink).
+ */
 export interface LinkLocation {
   nodeId: NodeId;
   property: string;
   index?: number;
 }
 
-// ---- Action payloads ----
-
+/** Payload for `addNode`. Extra properties are stored verbatim on the node. */
 export interface AddNodePayload {
   id: NodeId;
   type: string;
   [property: string]: NodePropertyValue;
 }
 
+/**
+ * Payload for `updateNode`. `id` selects the node; `type` is ignored if
+ * present (type is structural and only set at creation).
+ */
 export interface UpdateNodePayload {
   id: NodeId;
   [property: string]: NodePropertyValue;
 }
 
+/** Payload for `deleteNode`. */
 export interface DeleteNodePayload {
   id: NodeId;
 }
 
+/**
+ * Payload for `insertLink`. `targetId` is the node being linked *to*; `at`
+ * names the source slot (`{ nodeId, property, index? }`).
+ */
 export interface InsertLinkPayload {
   targetId: NodeId;
   at: LinkLocation;
 }
 
+/**
+ * Payload for `removeLink`. Either `at.index` (positional) or `targetId`
+ * (first match wins) identifies which entry to drop.
+ */
 export interface RemoveLinkPayload {
   at: LinkLocation;
   targetId?: NodeId;
 }
 
+/**
+ * Payload for `setContext`. With `merge: true`, overlays onto the existing
+ * context; otherwise replaces it outright.
+ */
 export interface SetContextPayload {
   context: JsonLdContext;
-  // If true, merge with existing context. If false (default), replace.
   merge?: boolean;
 }
