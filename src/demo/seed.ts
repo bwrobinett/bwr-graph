@@ -6,8 +6,9 @@ import {
   NODE_TYPE_CONVERSATION,
 } from "./chatbot/schema";
 import { formContext } from "./form/schema";
+import { seedDemoShell } from "./demo/seed";
 
-// The demo graph as a JSON-LD document. Import-pipeline takes it apart and
+// The form subgraph as a JSON-LD document. Import-pipeline takes it apart and
 // dispatches addNode for each node — exactly what an external JSON-LD source
 // would feed in.
 const demoDoc = {
@@ -39,6 +40,7 @@ const demoDoc = {
 };
 
 export async function seedDemoGraph(): Promise<void> {
+  // Form showcase — comes in via the JSON-LD importer to prove the round-trip.
   const { context, nodes } = await importJsonLd(demoDoc);
   store.dispatch(setContext({ context }));
   for (const node of nodes) {
@@ -59,5 +61,16 @@ export async function seedDemoGraph(): Promise<void> {
       title: "bwr-graph chat",
       messages: [],
     }),
+  );
+
+  // Meta-showcase: the demo shell itself, as a graph. Tabs are nodes; the
+  // active tab is a property on the DemoApp node. The merged demo registry
+  // (demo/registry.ts) maps each node type to its renderer.
+  seedDemoShell(
+    [
+      { key: "form", label: "Form", targetId: "form-1" },
+      { key: "chat", label: "Chat", targetId: "conv-1" },
+    ],
+    "form",
   );
 }
