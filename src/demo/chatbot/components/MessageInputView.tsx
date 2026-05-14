@@ -1,7 +1,11 @@
 import { useCallback, useRef, useState } from "react";
 import { useDispatch, useStore } from "react-redux";
 import { addNode, insertLink, updateNode } from "../../../graph/slice";
-import { selectLinkedNodes, type RootState } from "../../../graph/selectors";
+import {
+  selectLinkedNodes,
+  selectNode,
+  type RootState,
+} from "../../../graph/selectors";
 import {
   NODE_TYPE_MESSAGE,
   type MessageRole,
@@ -110,7 +114,12 @@ export function MessageInputView({
       // 3. ask the responder, fill in the placeholder
       try {
         const history = readHistory().filter((m) => m.id !== assistantId);
-        const reply = await responder(history);
+        const conversation = selectNode(store.getState(), conversationId);
+        const systemPrompt =
+          typeof conversation?.systemPrompt === "string"
+            ? conversation.systemPrompt
+            : undefined;
+        const reply = await responder(history, { systemPrompt });
         dispatch(updateNode({ id: assistantId, content: reply }));
       } catch (err) {
         const message = (err as Error).message ?? String(err);

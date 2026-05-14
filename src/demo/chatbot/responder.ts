@@ -1,12 +1,26 @@
 import type { MessageView } from "./schema";
 
+// Per-call options the responder may consult. Currently just the system
+// prompt the conversation node carries. Optional so existing callers and the
+// stub responder don't have to change.
+export interface ResponderOptions {
+  systemPrompt?: string;
+}
+
 // A Responder generates the next assistant message given the full history
 // (which already includes the latest user turn). The graph store doesn't know
 // or care whether this is a stub, a local LLM, or an API call.
-export type Responder = (history: MessageView[]) => Promise<string>;
+export type Responder = (
+  history: MessageView[],
+  options?: ResponderOptions,
+) => Promise<string>;
+
+// Default system prompt used when the conversation node doesn't carry one.
+export const DEFAULT_SYSTEM_PROMPT =
+  "You are a helpful assistant in a chat. Reply concisely.";
 
 // Stub responder — echoes the last user message. Useful for tests and for
-// running the CLI without an LLM dependency.
+// running the CLI without an LLM dependency. Ignores `systemPrompt`.
 export const stubResponder: Responder = async (history) => {
   const last = [...history].reverse().find((m) => m.role === "user");
   if (!last) return "(no user message)";
@@ -21,7 +35,6 @@ const LOCAL_LLM_BASE =
 const LOCAL_LLM_URL = `${LOCAL_LLM_BASE}/v1/chat/completions`;
 const LOCAL_LLM_MODELS_URL = `${LOCAL_LLM_BASE}/v1/models`;
 const LOCAL_LLM_MODEL = "mlx-community/Qwen3-4B-Instruct-2507-4bit";
-const SYSTEM_PROMPT = "You are a helpful assistant in a chat. Reply concisely.";
 
 interface ChatMessage {
   role: "system" | "user" | "assistant";
@@ -34,10 +47,12 @@ interface ChatCompletion {
 
 // Local LLM responder — POSTs to the mlx-lm server's OpenAI-compatible
 // endpoint. Sends the full conversation history each call; the graph store
-// is the source of truth, the server is stateless.
-export const localLlmResponder: Responder = async (history) => {
+// is the source of truth, the server is stateless. The system prompt comes
+// from the Conversation node (via the caller) and falls back to the default.
+export const localLlmResponder: Responder = async (history, options) => {
+  const systemPrompt = options?.systemPrompt?.trim() || DEFAULT_SYSTEM_PROMPT;
   const messages: ChatMessage[] = [
-    { role: "system", content: SYSTEM_PROMPT },
+    { role: "system", content: systemPrompt },
     ...history.map((m) => ({ role: m.role, content: m.content })),
   ];
 
