@@ -8,6 +8,7 @@ import {
 import { NodeRenderer } from "../../../renderer/NodeRenderer";
 import { ChatbotConfigContext } from "./ChatbotConfigContext";
 import { MessageInputView } from "./MessageInputView";
+import { SystemPromptView } from "./SystemPromptView";
 
 /**
  * Top-level renderer for a `Conversation` node. Walks the `messages` link list
@@ -32,6 +33,7 @@ export function ConversationView({ nodeId }: { nodeId: string }) {
         </h2>
         <small style={{ color: "#888" }}>responder: {config.responderName}</small>
       </header>
+      <SystemPromptView conversationId={nodeId} />
       <div data-testid={`conversation-${nodeId}-messages`} style={messagesStyle}>
         {messageIds.length === 0 ? (
           <p style={emptyStyle}>No messages yet — say hi.</p>
