@@ -11,32 +11,37 @@ import { seedGraphView } from "./graph-view/seed";
 
 // The form subgraph as a JSON-LD document. Import-pipeline takes it apart and
 // dispatches addNode for each node — exactly what an external JSON-LD source
-// would feed in.
+// would feed in. Form's `@context` aliases `@id` → `componentKey`, so node
+// identifiers live under `componentKey` here. The importer strips the alias
+// before flattening (so the canonical `@id` reaches `convertNode`) and
+// preserves it on `state.context` so export round-trips through the same
+// vocabulary. Chatbot, story, and the demo shell still use `@id`/`id` — they
+// share the same flat node dictionary regardless.
 const demoDoc = {
   "@context": formContext,
   "@graph": [
     {
-      "@id": "form-1",
+      componentKey: "form-1",
       "@type": "Form",
       title: "Intake form",
-      children: [{ "@id": "sec-about" }, { "@id": "sec-contact" }],
+      children: [{ componentKey: "sec-about" }, { componentKey: "sec-contact" }],
     },
     {
-      "@id": "sec-about",
+      componentKey: "sec-about",
       "@type": "Section",
       title: "About you",
-      children: [{ "@id": "f-name" }, { "@id": "f-role" }],
+      children: [{ componentKey: "f-name" }, { componentKey: "f-role" }],
     },
     {
-      "@id": "sec-contact",
+      componentKey: "sec-contact",
       "@type": "Section",
       title: "Contact",
-      children: [{ "@id": "f-email" }, { "@id": "f-phone" }],
+      children: [{ componentKey: "f-email" }, { componentKey: "f-phone" }],
     },
-    { "@id": "f-name", "@type": "Field", label: "Full name", value: "" },
-    { "@id": "f-role", "@type": "Field", label: "Role", value: "" },
-    { "@id": "f-email", "@type": "Field", label: "Email", value: "" },
-    { "@id": "f-phone", "@type": "Field", label: "Phone", value: "" },
+    { componentKey: "f-name", "@type": "Field", label: "Full name", value: "" },
+    { componentKey: "f-role", "@type": "Field", label: "Role", value: "" },
+    { componentKey: "f-email", "@type": "Field", label: "Email", value: "" },
+    { componentKey: "f-phone", "@type": "Field", label: "Phone", value: "" },
   ],
 };
 
