@@ -5,11 +5,16 @@ import type { JsonLdContext } from "../../graph/types";
 // `messages` is an ordered link list — preserves turn order across export +
 // re-import. `parent` lets a Message link back to its Conversation, but isn't
 // dereferenced by getHistory; it's there so a Message standing alone still
-// knows where it belongs.
+// knows where it belongs. `embed` is the cross-schema hook: a Message can
+// link to any other node (a Form, a Story scene, anything), and the merged
+// registry takes care of rendering — chatbot doesn't need to know the
+// embedded node's type. The text `content` literal stays as-is; `embed` is
+// an additional, optional link that augments the bubble.
 export const chatbotContext: JsonLdContext = {
   "@vocab": "http://bwr-graph.example/chatbot/",
   messages: { "@type": "@id", "@container": "@list" },
   parent: { "@type": "@id" },
+  embed: { "@type": "@id" },
 };
 
 export const NODE_TYPE_CONVERSATION = "Conversation";

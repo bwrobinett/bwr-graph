@@ -1,5 +1,10 @@
 import { useSelector } from "react-redux";
-import { selectNode, type RootState } from "../../../graph/selectors";
+import {
+  selectLinkedIds,
+  selectNode,
+  type RootState,
+} from "../../../graph/selectors";
+import { NodeRenderer } from "../../../renderer/NodeRenderer";
 import type { MessageRole } from "../schema";
 
 /**
@@ -7,9 +12,19 @@ import type { MessageRole } from "../schema";
  * — user vs assistant vs system — but the underlying node shape is identical
  * (one `Message` type, role discriminator). Same `<NodeRenderer />` flow that
  * the form builder uses; the registry maps `Message` → this component.
+ *
+ * Cross-schema hook: if the Message has an `embed` link (declared in
+ * `chatbotContext`), the linked node is rendered inside the bubble via
+ * `NodeRenderer`. Chatbot doesn't know or care what node type sits on the
+ * other end — the merged registry dispatches it. A Message can embed a Form,
+ * a Story scene, another Conversation, anything.
  */
 export function MessageView({ nodeId }: { nodeId: string }) {
   const node = useSelector((s: RootState) => selectNode(s, nodeId));
+  const embedIds = useSelector(
+    (s: RootState) => selectLinkedIds(s, nodeId, "embed"),
+    shallowArrayEqual,
+  );
   if (!node) return null;
 
   const role = (node.role as MessageRole) ?? "user";
@@ -20,10 +35,35 @@ export function MessageView({ nodeId }: { nodeId: string }) {
     <div data-testid={`message-${nodeId}`} data-role={role} style={rowStyleFor(role)}>
       <div style={style}>
         <div style={roleLabelStyle}>{role}</div>
-        <div style={contentStyle}>{content || (role === "assistant" ? "…" : "")}</div>
+        {content || (role === "assistant" && embedIds.length === 0) ? (
+          <div style={contentStyle}>
+            {content || (role === "assistant" ? "…" : "")}
+          </div>
+        ) : null}
+        {embedIds.length > 0 ? (
+          <div data-testid={`message-${nodeId}-embeds`} style={embedListStyle}>
+            {embedIds.map((id) => (
+              <div
+                key={id}
+                data-testid={`message-${nodeId}-embed-${id}`}
+                style={embedFrameStyle}
+              >
+                <div style={embedLabelStyle}>embedded · {id}</div>
+                <NodeRenderer nodeId={id} />
+              </div>
+            ))}
+          </div>
+        ) : null}
       </div>
     </div>
   );
+}
+
+function shallowArrayEqual(a: readonly string[], b: readonly string[]) {
+  if (a === b) return true;
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return false;
+  return true;
 }
 
 function rowStyleFor(role: MessageRole): React.CSSProperties {
@@ -75,4 +115,31 @@ const roleLabelStyle: React.CSSProperties = {
 
 const contentStyle: React.CSSProperties = {
   fontSize: 14,
+};
+
+const embedListStyle: React.CSSProperties = {
+  marginTop: 8,
+  display: "flex",
+  flexDirection: "column",
+  gap: 8,
+};
+
+// Visually obvious framing for cross-schema embeds: a dashed accent border +
+// "embedded" label so it's clear at a glance the content inside isn't a
+// chatbot-native bubble — it's a node from some other schema, rendered
+// through the merged registry.
+const embedFrameStyle: React.CSSProperties = {
+  border: "1.5px dashed #b76cff",
+  borderRadius: 8,
+  padding: 8,
+  background: "rgba(255,255,255,0.7)",
+};
+
+const embedLabelStyle: React.CSSProperties = {
+  fontSize: 10,
+  textTransform: "uppercase",
+  letterSpacing: 0.5,
+  color: "#7a3fb8",
+  marginBottom: 6,
+  fontWeight: 600,
 };
