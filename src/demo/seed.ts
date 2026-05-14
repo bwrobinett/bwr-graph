@@ -8,6 +8,8 @@ import {
 import { formContext } from "./form/schema";
 import { seedDemoShell } from "./demo/seed";
 import { seedGraphView } from "./graph-view/seed";
+import { seedStory } from "./story/seed";
+import { seedComposed } from "./composed/seed";
 
 // The form subgraph as a JSON-LD document. Import-pipeline takes it apart and
 // dispatches addNode for each node — exactly what an external JSON-LD source
@@ -69,9 +71,21 @@ export async function seedDemoGraph(): Promise<void> {
     }),
   );
 
+  // Story showcase — the same sample story `cli.ts` builds, seeded into the
+  // shared demo store so it can render alongside the other showcases. (The
+  // library still exposes a `createStory()` API with its own private store;
+  // this is the UI dual.)
+  seedStory();
+
   // Graph-view showcase — generic-render-everything tab. Seeded before
   // seedDemoShell so the shell's own nodes (app-1, tab-*) show up in it too.
   seedGraphView();
+
+  // Composed showcase — must run AFTER form/chatbot/story/graph-view have
+  // seeded their roots, since the Composed node links to them by id. Also
+  // owns the cross-schema demo (a Message whose `embed` link points at
+  // `form-1`).
+  seedComposed();
 
   // Meta-showcase: the demo shell itself, as a graph. Tabs are nodes; the
   // active tab is a property on the DemoApp node. The merged demo registry
@@ -80,7 +94,9 @@ export async function seedDemoGraph(): Promise<void> {
     [
       { key: "form", label: "Form", targetId: "form-1" },
       { key: "chat", label: "Chat", targetId: "conv-1" },
+      { key: "story", label: "Story", targetId: "story-1" },
       { key: "graph-view", label: "Graph View", targetId: "graph-view-1" },
+      { key: "composed", label: "Composed", targetId: "composed-1" },
     ],
     "form",
   );
