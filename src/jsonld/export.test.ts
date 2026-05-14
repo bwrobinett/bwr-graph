@@ -89,6 +89,90 @@ describe("exportJsonLd", () => {
     expect(ids).not.toContain("unrelated");
   });
 
+  it("emits the @id alias when the context declares one", () => {
+    const state: GraphState = {
+      context: {
+        componentKey: { "@id": "@id" },
+        children: { "@type": "@id" },
+      },
+      nodes: {
+        "form-1": {
+          id: "form-1",
+          type: "Form",
+          children: ["sec-1"],
+        },
+      },
+    };
+    const exported = exportJsonLd(state) as {
+      "@graph": Array<Record<string, unknown>>;
+    };
+    const node = exported["@graph"][0];
+    expect(node.componentKey).toBe("form-1");
+    expect(node["@id"]).toBeUndefined();
+    // @type stays canonical (no alias declared for it).
+    expect(node["@type"]).toBe("Form");
+  });
+
+  it("emits the @type alias when the context declares one", () => {
+    const state: GraphState = {
+      context: {
+        kind: { "@id": "@type" },
+      },
+      nodes: {
+        "form-1": { id: "form-1", type: "Form", title: "Intake" },
+      },
+    };
+    const exported = exportJsonLd(state) as {
+      "@graph": Array<Record<string, unknown>>;
+    };
+    const node = exported["@graph"][0];
+    expect(node.kind).toBe("Form");
+    expect(node["@type"]).toBeUndefined();
+    expect(node["@id"]).toBe("form-1");
+  });
+
+  it("round-trips an aliased-@id doc through import + export + import", async () => {
+    const original = {
+      "@context": {
+        "@vocab": "http://example.com/",
+        componentKey: { "@id": "@id" },
+        children: { "@type": "@id" },
+      },
+      "@graph": [
+        {
+          componentKey: "form-1",
+          "@type": "Form",
+          title: "Intake",
+          children: [{ componentKey: "sec-1" }, { componentKey: "sec-2" }],
+        },
+        { componentKey: "sec-1", "@type": "Section", title: "About" },
+        { componentKey: "sec-2", "@type": "Section", title: "Contact" },
+      ],
+    };
+
+    const first = await importJsonLd(original);
+    const state: GraphState = {
+      context: first.context,
+      nodes: byId(first.nodes),
+    };
+
+    // Sanity: export emits using the alias, not @id.
+    const exported = exportJsonLd(state) as {
+      "@graph": Array<Record<string, unknown>>;
+    };
+    const formNode = exported["@graph"].find(
+      (n) => n.componentKey === "form-1",
+    );
+    expect(formNode).toBeDefined();
+    expect(formNode?.["@id"]).toBeUndefined();
+    expect(formNode?.children).toEqual(["sec-1", "sec-2"]);
+
+    // Re-import yields identical state.
+    const second = await importJsonLd(exported);
+    expect(byId(second.nodes)).toEqual(state.nodes);
+    expect(second.context).toEqual(state.context);
+  });
+
   it("round-trips through import + export + import", async () => {
     const original = {
       "@context": {

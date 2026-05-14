@@ -108,6 +108,50 @@ describe("importJsonLd", () => {
     expect(form?.["http://example.com/title"]).toBe("Intake");
   });
 
+  it("imports a doc whose @context aliases @id (string form)", async () => {
+    // Spec-canonical alias: `componentKey: "@id"`. jsonld.flatten honors the
+    // alias and would emit `componentKey` instead of `@id` if we passed the
+    // raw context through; the import path strips the alias before flatten.
+    const doc = {
+      "@context": {
+        "@vocab": "http://example.com/",
+        componentKey: "@id",
+      },
+      "@graph": [
+        { componentKey: "form-1", "@type": "Form", title: "Intake" },
+        { componentKey: "sec-1", "@type": "Section", title: "About" },
+      ],
+    };
+
+    const { nodes } = await importJsonLd(doc);
+
+    expect(nodes).toHaveLength(2);
+    expect(nodes.find((n) => n.id === "form-1")?.title).toBe("Intake");
+    expect(nodes.find((n) => n.id === "sec-1")?.title).toBe("About");
+  });
+
+  it("imports a doc whose @context aliases @id (object form)", async () => {
+    // Object-form alias: `componentKey: { "@id": "@id" }`. This is the form
+    // we recommend internally because it doesn't collide with the codebase's
+    // string-form link-property shorthand.
+    const doc = {
+      "@context": {
+        "@vocab": "http://example.com/",
+        componentKey: { "@id": "@id" },
+      },
+      "@graph": [
+        { componentKey: "form-1", "@type": "Form", title: "Intake" },
+      ],
+    };
+
+    const { context, nodes } = await importJsonLd(doc);
+
+    expect(nodes).toHaveLength(1);
+    expect(nodes[0].id).toBe("form-1");
+    // Alias is preserved on state.context so export can re-emit using it.
+    expect(context.componentKey).toEqual({ "@id": "@id" });
+  });
+
   it("skips anonymous (blank) nodes that lack a stable @id", async () => {
     const doc = {
       "@context": { "@vocab": "http://example.com/" },
