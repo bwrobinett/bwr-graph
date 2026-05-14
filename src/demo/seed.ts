@@ -7,6 +7,7 @@ import {
 } from "./chatbot/schema";
 import { formContext } from "./form/schema";
 import { seedDemoShell } from "./demo/seed";
+import { seedGraphView } from "./graph-view/seed";
 
 // The form subgraph as a JSON-LD document. Import-pipeline takes it apart and
 // dispatches addNode for each node — exactly what an external JSON-LD source
@@ -63,6 +64,10 @@ export async function seedDemoGraph(): Promise<void> {
     }),
   );
 
+  // Graph-view showcase — generic-render-everything tab. Seeded before
+  // seedDemoShell so the shell's own nodes (app-1, tab-*) show up in it too.
+  seedGraphView();
+
   // Meta-showcase: the demo shell itself, as a graph. Tabs are nodes; the
   // active tab is a property on the DemoApp node. The merged demo registry
   // (demo/registry.ts) maps each node type to its renderer.
@@ -70,6 +75,7 @@ export async function seedDemoGraph(): Promise<void> {
     [
       { key: "form", label: "Form", targetId: "form-1" },
       { key: "chat", label: "Chat", targetId: "conv-1" },
+      { key: "graph-view", label: "Graph View", targetId: "graph-view-1" },
     ],
     "form",
   );
