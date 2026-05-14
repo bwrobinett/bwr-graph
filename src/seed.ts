@@ -1,6 +1,10 @@
 import { addNode, setContext } from "./graph/slice";
 import { importJsonLd } from "./jsonld/import";
 import { store } from "./store";
+import {
+  chatbotContext,
+  NODE_TYPE_CONVERSATION,
+} from "./chatbot/schema";
 
 // The demo graph as a JSON-LD document. Import-pipeline takes it apart and
 // dispatches addNode for each node — exactly what an external JSON-LD source
@@ -42,4 +46,20 @@ export async function seedDemoGraph(): Promise<void> {
   for (const node of nodes) {
     store.dispatch(addNode(node));
   }
+
+  // Merge the chatbot context onto the form context so `messages` and
+  // `parent` are recognised as link properties — selectLinkedNodes walks them
+  // only when declared.
+  store.dispatch(setContext({ context: chatbotContext, merge: true }));
+
+  // Seed an empty Conversation. The chat surface mounts on this id; messages
+  // are dispatched in by `MessageInputView` as the user interacts.
+  store.dispatch(
+    addNode({
+      id: "conv-1",
+      type: NODE_TYPE_CONVERSATION,
+      title: "bwr-graph chat",
+      messages: [],
+    }),
+  );
 }

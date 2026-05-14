@@ -13,7 +13,13 @@ export const stubResponder: Responder = async (history) => {
   return `Got it: ${last.content}`;
 };
 
-const LOCAL_LLM_URL = "http://localhost:8080/v1/chat/completions";
+// Browser fetches go through the Vite dev proxy at `/llm/*` so a phone on the
+// tailnet can reach mlx-lm (which only binds 127.0.0.1). Node (CLI) hits
+// localhost directly.
+const LOCAL_LLM_BASE =
+  typeof window === "undefined" ? "http://localhost:8080" : "/llm";
+const LOCAL_LLM_URL = `${LOCAL_LLM_BASE}/v1/chat/completions`;
+const LOCAL_LLM_MODELS_URL = `${LOCAL_LLM_BASE}/v1/models`;
 const LOCAL_LLM_MODEL = "mlx-community/Qwen3-4B-Instruct-2507-4bit";
 const SYSTEM_PROMPT = "You are a helpful assistant in a chat. Reply concisely.";
 
@@ -64,7 +70,7 @@ export async function pickDefaultResponder(): Promise<{
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 1000);
-    const res = await fetch("http://localhost:8080/v1/models", {
+    const res = await fetch(LOCAL_LLM_MODELS_URL, {
       signal: controller.signal,
     });
     clearTimeout(timer);
