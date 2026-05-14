@@ -2,6 +2,7 @@ import type { Registry } from "../renderer/RegistryContext";
 import { formRegistry } from "./form/components/registry";
 import { chatbotRegistry } from "./chatbot/components/registry";
 import { demoShellRegistry } from "./demo/components/registry";
+import { graphViewRegistry } from "./graph-view/components/registry";
 
 /**
  * The demo's merged registry: meta-shell + every showcase. Single
@@ -13,4 +14,5 @@ export const mergedDemoRegistry: Registry = {
   ...demoShellRegistry,
   ...formRegistry,
   ...chatbotRegistry,
+  ...graphViewRegistry,
 };
