@@ -23,4 +23,4 @@ Children call `<NodeRenderer nodeId={childId} />` recursively, pulling their own
 
 - [EPIC - Graph store](https://github.com/bwrobinett/bwr-monorepo/blob/main/_kim/Skills/proj-bwr-graph/EPIC%20-%20Graph%20store.md) — universal-renderer rationale
 - [`../graph/README.md`](../graph/README.md) — the store this renders from
-- [`../components/README.md`](../components/README.md) — form-builder registry, the canonical example
+- [`../demo/form/components/README.md`](../demo/form/components/README.md) — form-builder registry, the canonical example

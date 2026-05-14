@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 import { useDispatch, useStore } from "react-redux";
-import { addNode, insertLink, updateNode } from "../../graph/slice";
-import { selectLinkedNodes, type RootState } from "../../graph/selectors";
+import { addNode, insertLink, updateNode } from "../../../graph/slice";
+import { selectLinkedNodes, type RootState } from "../../../graph/selectors";
 import {
   NODE_TYPE_MESSAGE,
   type MessageRole,

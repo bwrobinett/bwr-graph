@@ -1,7 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { argv, exit, stdout } from "node:process";
-import { createStory, loadStory, type Story } from "../story/story";
+import { createStory, loadStory, type Story } from "./story";
 
 const HELP = `
 bwr-story — inspect or build a story graph (proves multi-reference graphs work).

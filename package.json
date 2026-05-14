@@ -10,8 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "chat": "vite-node src/cli/chatbot.ts",
-    "story": "vite-node src/cli/story.ts"
+    "chat": "vite-node src/demo/chatbot/cli.ts",
+    "story": "vite-node src/demo/story/cli.ts"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.7",

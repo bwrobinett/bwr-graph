@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { selectNode, type RootState } from "../../graph/selectors";
+import { selectNode, type RootState } from "../../../graph/selectors";
 import type { MessageRole } from "../schema";
 
 /**

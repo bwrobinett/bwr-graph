@@ -1,4 +1,4 @@
-import type { Registry } from "../../renderer/RegistryContext";
+import type { Registry } from "../../../renderer/RegistryContext";
 import { NODE_TYPE_CONVERSATION, NODE_TYPE_MESSAGE } from "../schema";
 import { ConversationView } from "./ConversationView";
 import { MessageView } from "./MessageView";

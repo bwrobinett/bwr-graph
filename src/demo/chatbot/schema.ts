@@ -1,4 +1,4 @@
-import type { JsonLdContext } from "../graph/types";
+import type { JsonLdContext } from "../../graph/types";
 
 // JSON-LD context for chatbot conversations.
 //

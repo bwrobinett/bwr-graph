@@ -1,19 +1,17 @@
-import { addNode, setContext } from "./graph/slice";
-import { importJsonLd } from "./jsonld/import";
+import { addNode, setContext } from "../graph/slice";
+import { importJsonLd } from "../jsonld/import";
 import { store } from "./store";
 import {
   chatbotContext,
   NODE_TYPE_CONVERSATION,
 } from "./chatbot/schema";
+import { formContext } from "./form/schema";
 
 // The demo graph as a JSON-LD document. Import-pipeline takes it apart and
 // dispatches addNode for each node — exactly what an external JSON-LD source
 // would feed in.
 const demoDoc = {
-  "@context": {
-    "@vocab": "http://bwr-graph.example/",
-    children: { "@type": "@id", "@container": "@list" },
-  },
+  "@context": formContext,
   "@graph": [
     {
       "@id": "form-1",

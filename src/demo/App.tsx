@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { store } from "./store";
-import { RegistryContext } from "./renderer/RegistryContext";
-import { NodeRenderer } from "./renderer/NodeRenderer";
-import { formRegistry } from "./components/registry";
+import { RegistryContext } from "../renderer/RegistryContext";
+import { NodeRenderer } from "../renderer/NodeRenderer";
+import { formRegistry } from "./form/components/registry";
 import { chatbotRegistry } from "./chatbot/components/registry";
 import {
   ChatbotConfigContext,

@@ -2,8 +2,8 @@ import { createInterface } from "node:readline/promises";
 import { stdin, stdout } from "node:process";
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { createChatbot, loadChatbot, type Chatbot } from "../chatbot/conversation";
-import { pickDefaultResponder, stubResponder, localLlmResponder, type Responder } from "../chatbot/responder";
+import { createChatbot, loadChatbot, type Chatbot } from "./conversation";
+import { pickDefaultResponder, stubResponder, localLlmResponder, type Responder } from "./responder";
 
 const HELP = `
 Commands:

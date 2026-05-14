@@ -6,6 +6,7 @@ Vertical-slice demo: a story is a DAG, not a tree. `Story → Scene[]`, but each
 
 - `schema.ts` — `Story` / `Scene` / `Character` node types + JSON-LD `@context` (with `characters` declared as a link list).
 - `story.ts` — `createStory(...)` / `loadStory(...)`: helpers for adding scenes, attaching characters, saving / loading via JSON-LD.
+- `cli.ts` — `npm run story` entry point. Loads / saves / inspects story JSON-LD docs.
 - `story.test.ts` — DAG-shape tests (shared-character refs survive round-trip).
 
 ## What this proves
@@ -15,5 +16,5 @@ Multi-reference graphs work without special-case code. The `removeLink` / `inser
 ## See also
 
 - [BRAINSTORM](https://github.com/bwrobinett/bwr-monorepo/blob/main/_kim/Skills/proj-bwr-graph/BRAINSTORM.md) — story-writing as a named vertical slice
-- [`../graph/README.md`](../graph/README.md) — reducer + selector semantics this relies on
-- [`../cli/README.md`](../cli/README.md) — the `npm run story` entry point
+- [`../../graph/README.md`](../../graph/README.md) — reducer + selector semantics this relies on
+- [`../../jsonld/README.md`](../../jsonld/README.md) — import/export pipeline used by `/save` and `/load`
