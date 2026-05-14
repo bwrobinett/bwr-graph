@@ -5,7 +5,7 @@ import type {
   NodeId,
   NodePropertyValue,
 } from "../graph/types";
-import { isLinkProperty } from "../graph/context";
+import { findAliasFor, isLinkProperty } from "../graph/context";
 import type { JsonLdDocument } from "./import";
 
 export interface ExportOptions {
@@ -68,9 +68,16 @@ function emitNode(
   node: GraphNode,
   context: JsonLdContext,
 ): Record<string, unknown> {
+  // Honor any `@id` / `@type` alias declared in the active context — emit the
+  // node's identifier and type under the alias key so the doc round-trips
+  // through the same vocabulary it was imported with. Falls back to the
+  // canonical keywords when no alias is declared.
+  const idKey = findAliasFor(context, "@id") ?? "@id";
+  const typeKey = findAliasFor(context, "@type") ?? "@type";
+
   const out: Record<string, unknown> = {
-    "@id": node.id,
-    "@type": node.type,
+    [idKey]: node.id,
+    [typeKey]: node.type,
   };
 
   for (const [key, value] of Object.entries(node)) {

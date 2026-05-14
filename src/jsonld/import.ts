@@ -6,6 +6,7 @@ import type {
   NodePropertyValue,
   Primitive,
 } from "../graph/types";
+import { stripIdTypeAliases } from "../graph/context";
 
 // A JSON-LD document, in any of compact, expanded, or flattened form.
 export type JsonLdDocument =
@@ -17,25 +18,42 @@ export interface ImportResult {
   nodes: GraphNode[];
 }
 
-// Import a JSON-LD doc into our flat-graph shape. Uses jsonld.flatten with the
-// doc's own @context, then walks each node:
+// Import a JSON-LD doc into our flat-graph shape. Uses jsonld.flatten with a
+// derived context (input @context minus any @id/@type keyword aliases) so the
+// flattener emits literal `@id`/`@type` rather than alias keys, then walks
+// each node:
 //   - @id  → id
 //   - @type → type (single string; arrays collapse to their first entry)
 //   - declared @id properties: bare strings or [string, ...] become link arrays
 //   - {"@id": "..."} value objects also become links
 //   - {"@value": x} value objects unwrap to x
 //   - everything else passes through as a literal
+//
+// Why strip alias entries: `jsonld.flatten(doc, ctx)` honors any `@id`/`@type`
+// alias declared in `ctx`, producing output where node identifiers live under
+// the alias key (e.g. `componentKey`) instead of `@id`. The downstream
+// `convertNode` reads `raw["@id"]` and would see `undefined`. Stripping the
+// alias entries gives us the canonical keyword keys without losing
+// property-name aliases (e.g. `children: { "@type": "@id" }` is retained).
+//
+// The stripped alias survives in `narrowContext`'s output, so it round-trips
+// to the export side, which re-emits using the alias.
 export async function importJsonLd(doc: JsonLdDocument): Promise<ImportResult> {
   const inputContext = extractInputContext(doc);
+  const ourContext = narrowContext(inputContext);
+
+  // Pass a derived context that doesn't alias @id / @type — flatten will then
+  // emit literal `@id`/`@type` keys regardless of whether the input doc used
+  // an alias.
+  const flattenContext = stripIdTypeAliases(ourContext);
   // jsonld's typed signature is narrower than what's actually accepted at
   // runtime; cast through unknown to avoid fighting the lib's types.
   const flat = (await jsonld.flatten(
     doc as object,
-    (inputContext as unknown) as Parameters<typeof jsonld.flatten>[1],
+    flattenContext as unknown as Parameters<typeof jsonld.flatten>[1],
   )) as unknown;
 
   const graphArr: Array<Record<string, unknown>> = normalizeFlatten(flat);
-  const ourContext = narrowContext(inputContext);
 
   const nodes: GraphNode[] = [];
   for (const item of graphArr) {
@@ -79,6 +97,11 @@ function extractInputContext(
 // Map an input @context to our JsonLdContext shape. Only inline-object
 // contexts are kept; URL/array contexts pass through as empty (entries get
 // inferred during conversion).
+//
+// Preserved entry shapes:
+//   - string `"@id"` or `"@type"` — keyword aliases (e.g. `componentKey: "@id"`)
+//   - object with `@type: "@id"` and/or `@container` — link-property declarations
+//   - object with `@id: "@id"` or `@id: "@type"` — keyword alias in object form
 function narrowContext(
   input: Record<string, unknown> | undefined,
 ): JsonLdContext {
@@ -91,6 +114,12 @@ function narrowContext(
     }
     if (typeof value === "object" && value !== null) {
       const v = value as Record<string, unknown>;
+      // Object-form keyword alias: { "@id": "@id" } or { "@id": "@type" }
+      const aliasTarget = v["@id"];
+      if (aliasTarget === "@id" || aliasTarget === "@type") {
+        out[key] = { "@id": aliasTarget } as Exclude<ContextEntry, string>;
+        continue;
+      }
       const entry: Exclude<ContextEntry, string> = {};
       if (v["@type"] === "@id") entry["@type"] = "@id";
       else if (typeof v["@type"] === "string")
