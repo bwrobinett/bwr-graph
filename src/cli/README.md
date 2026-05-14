@@ -4,7 +4,7 @@ Entry points for the two non-React vertical-slice demos. Run via `vite-node`.
 
 ## What's in here
 
-- `chatbot.ts` — `npm run chat`. Interactive REPL over `chatbot/conversation.ts`. Slash commands: `/help`, `/history`, `/save`, `/load`, `/responder stub|gemini`, `/quit`.
+- `chatbot.ts` — `npm run chat`. Interactive REPL over `chatbot/conversation.ts`. Slash commands: `/help`, `/history`, `/save`, `/load`, `/responder stub|local-llm`, `/quit`.
 - `story.ts` — `npm run story`. Demo loader for `story/story.ts`; prints scenes + characters and saves / loads JSON-LD.
 
 ## Status

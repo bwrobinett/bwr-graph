@@ -3,7 +3,7 @@ import { stdin, stdout } from "node:process";
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { createChatbot, loadChatbot, type Chatbot } from "../chatbot/conversation";
-import { pickDefaultResponder, stubResponder, geminiResponder, type Responder } from "../chatbot/responder";
+import { pickDefaultResponder, stubResponder, localLlmResponder, type Responder } from "../chatbot/responder";
 
 const HELP = `
 Commands:
@@ -11,7 +11,7 @@ Commands:
   /history         Print the full conversation history
   /save <path>     Save conversation as JSON-LD to <path>
   /load <path>     Load a conversation from a JSON-LD file (replaces current)
-  /responder gemini|stub   Switch responder mid-session
+  /responder local-llm|stub   Switch responder mid-session
   /quit            Exit
 Anything else is sent as a user message.
 `.trim();
@@ -113,14 +113,14 @@ async function handleCommand(line: string, state: CliState): Promise<boolean> {
     }
 
     case "responder": {
-      if (arg === "gemini") {
-        state.responder = geminiResponder;
-        state.responderName = "gemini";
+      if (arg === "local-llm") {
+        state.responder = localLlmResponder;
+        state.responderName = "local-llm";
       } else if (arg === "stub") {
         state.responder = stubResponder;
         state.responderName = "stub";
       } else {
-        console.log("usage: /responder gemini|stub\n");
+        console.log("usage: /responder local-llm|stub\n");
         return false;
       }
       console.log(`responder: ${state.responderName}\n`);
