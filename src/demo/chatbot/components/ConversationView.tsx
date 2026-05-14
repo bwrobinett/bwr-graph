@@ -4,8 +4,8 @@ import {
   selectLinkedIds,
   selectNode,
   type RootState,
-} from "../../graph/selectors";
-import { NodeRenderer } from "../../renderer/NodeRenderer";
+} from "../../../graph/selectors";
+import { NodeRenderer } from "../../../renderer/NodeRenderer";
 import { ChatbotConfigContext } from "./ChatbotConfigContext";
 import { MessageInputView } from "./MessageInputView";
 

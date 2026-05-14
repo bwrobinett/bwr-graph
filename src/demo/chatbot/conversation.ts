@@ -1,9 +1,9 @@
 import { configureStore, type Store } from "@reduxjs/toolkit";
-import { graphReducer, addNode, insertLink, setContext } from "../graph/slice";
-import { selectLinkedNodes } from "../graph/selectors";
-import type { GraphState, NodeId } from "../graph/types";
-import { exportJsonLd } from "../jsonld/export";
-import { importJsonLd, type JsonLdDocument } from "../jsonld/import";
+import { graphReducer, addNode, insertLink, setContext } from "../../graph/slice";
+import { selectLinkedNodes } from "../../graph/selectors";
+import type { GraphState, NodeId } from "../../graph/types";
+import { exportJsonLd } from "../../jsonld/export";
+import { importJsonLd, type JsonLdDocument } from "../../jsonld/import";
 import {
   chatbotContext,
   NODE_TYPE_CONVERSATION,

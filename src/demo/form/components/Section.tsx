@@ -1,8 +1,8 @@
 import { useSelector } from "react-redux";
-import { selectLinkedIds, selectNode, type RootState } from "../graph/selectors";
-import { NodeRenderer } from "../renderer/NodeRenderer";
+import { selectLinkedIds, selectNode, type RootState } from "../../../graph/selectors";
+import { NodeRenderer } from "../../../renderer/NodeRenderer";
 
-export function Form({ nodeId }: { nodeId: string }) {
+export function Section({ nodeId }: { nodeId: string }) {
   const node = useSelector((s: RootState) => selectNode(s, nodeId));
   const childIds = useSelector(
     (s: RootState) => selectLinkedIds(s, nodeId, "children"),
@@ -11,12 +11,12 @@ export function Form({ nodeId }: { nodeId: string }) {
   if (!node) return null;
 
   return (
-    <form data-testid={`form-${nodeId}`} style={formStyle}>
-      <h2 style={{ margin: "0 0 12px" }}>{String(node.title ?? "Untitled form")}</h2>
+    <fieldset data-testid={`section-${nodeId}`} style={sectionStyle}>
+      <legend style={{ fontWeight: 600 }}>{String(node.title ?? "")}</legend>
       {childIds.map((id) => (
         <NodeRenderer key={id} nodeId={id} />
       ))}
-    </form>
+    </fieldset>
   );
 }
 
@@ -27,9 +27,9 @@ function shallowArrayEqual(a: readonly string[], b: readonly string[]) {
   return true;
 }
 
-const formStyle: React.CSSProperties = {
-  border: "1px solid #ddd",
-  padding: 16,
-  borderRadius: 8,
-  maxWidth: 480,
+const sectionStyle: React.CSSProperties = {
+  border: "1px solid #eee",
+  padding: 12,
+  borderRadius: 6,
+  margin: "8px 0",
 };

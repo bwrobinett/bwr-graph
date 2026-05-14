@@ -16,5 +16,6 @@ A form is a graph: `Form → Section → Field`, with `children` as an ordered l
 ## See also
 
 - [EPIC - Graph store](https://github.com/bwrobinett/bwr-monorepo/blob/main/_kim/Skills/proj-bwr-graph/EPIC%20-%20Graph%20store.md) — form builder is one of the named application areas
-- [`../renderer/README.md`](../renderer/README.md) — `NodeRenderer` and the registry mechanism
-- [`../graph/README.md`](../graph/README.md) — the store these components select from
+- [`../schema.ts`](../schema.ts) — `Form` / `Section` / `Field` node types + `formContext`
+- [`../../../renderer/README.md`](../../../renderer/README.md) — `NodeRenderer` and the registry mechanism
+- [`../../../graph/README.md`](../../../graph/README.md) — the store these components select from

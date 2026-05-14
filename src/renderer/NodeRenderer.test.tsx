@@ -6,7 +6,7 @@ import { graphReducer, addNode, insertLink, setContext } from "../graph/slice";
 import { RegistryContext } from "./RegistryContext";
 import { NodeRenderer, RegistryOverride } from "./NodeRenderer";
 import { GenericNode } from "./GenericNode";
-import { formRegistry } from "../components/registry";
+import { formRegistry } from "../demo/form/components/registry";
 
 function makeStore() {
   return configureStore({ reducer: { graph: graphReducer } });

@@ -8,9 +8,9 @@ State is one flat map of nodes — every reference is an id pointing at another 
 
 The architectural claim: the same foundation works for any graph shape and any UI surface. So far that's been exercised by:
 
-- a tree-shaped React form builder (`src/components/`)
-- a linear command-line chatbot (`src/chatbot/`, no React)
-- a multi-reference DAG story-writer (`src/story/`)
+- a tree-shaped React form builder (`src/demo/form/`)
+- a linear chatbot (`src/demo/chatbot/`, browser surface + CLI)
+- a multi-reference DAG story-writer (`src/demo/story/`, CLI)
 
 All three round-trip through the same reducer + JSON-LD pipeline.
 
@@ -28,18 +28,21 @@ npm run build
 
 ## Layout
 
-`src/` folders, each with its own README:
+The library lives at the top of `src/`. Everything else is under `src/demo/`. Each folder has its own README.
 
-- [`graph/`](src/graph/README.md) — **core**: slice, selectors, types, JSON-LD context helpers
-- [`renderer/`](src/renderer/README.md) — **core**: `NodeRenderer`, `RegistryContext`, `RegistryOverride`, `GenericNode` fallback
-- [`jsonld/`](src/jsonld/README.md) — boundary: import (flatten) and export
-- [`components/`](src/components/README.md) — form-builder demo components
-- [`chatbot/`](src/chatbot/README.md) — vertical slice: chat as a graph
-- [`story/`](src/story/README.md) — vertical slice: story DAG with shared character refs
-- [`cli/`](src/cli/README.md) — CLI runners for the chatbot and story demos
-- [`test/`](src/test/README.md) — vitest setup
+**Library** (no schema, no UI assumptions):
 
-`App.tsx`, `main.tsx`, `store.ts`, `seed.ts` at the top of `src/` are the React app entry + demo seed.
+- [`src/graph/`](src/graph/README.md) — slice, selectors, types, JSON-LD context helpers
+- [`src/renderer/`](src/renderer/README.md) — `NodeRenderer`, `RegistryContext`, `RegistryOverride`, `GenericNode` fallback
+- [`src/jsonld/`](src/jsonld/README.md) — import (flatten) and export
+- [`src/test/`](src/test/README.md) — vitest setup (shared)
+
+**Demo** ([`src/demo/`](src/demo/README.md)):
+
+- `App.tsx`, `main.tsx`, `store.ts`, `seed.ts` — Vite entry + demo shell + Redux store + seed
+- [`form/`](src/demo/form/README.md) — form-builder showcase (React)
+- [`chatbot/`](src/demo/chatbot/README.md) — chatbot showcase (browser + CLI)
+- [`story/`](src/demo/story/README.md) — story DAG showcase (CLI)
 
 ## Project skill
 

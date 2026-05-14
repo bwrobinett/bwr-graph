@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { selectNode, type RootState } from "../graph/selectors";
-import { updateNode } from "../graph/slice";
+import { selectNode, type RootState } from "../../../graph/selectors";
+import { updateNode } from "../../../graph/slice";
 
 export function Field({ nodeId }: { nodeId: string }) {
   const node = useSelector((s: RootState) => selectNode(s, nodeId));

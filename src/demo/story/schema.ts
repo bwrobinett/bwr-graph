@@ -1,4 +1,4 @@
-import type { JsonLdContext } from "../graph/types";
+import type { JsonLdContext } from "../../graph/types";
 
 // JSON-LD context for stories. The graph here is genuinely non-tree:
 // `Scene.characters` references `Character` nodes that may also appear in

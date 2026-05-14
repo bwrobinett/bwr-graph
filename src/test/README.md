@@ -8,4 +8,4 @@ Vitest setup utilities.
 
 ## See also
 
-- [`../graph/README.md`](../graph/README.md), [`../renderer/README.md`](../renderer/README.md), [`../jsonld/README.md`](../jsonld/README.md), [`../chatbot/README.md`](../chatbot/README.md), [`../story/README.md`](../story/README.md) — each carries its own `*.test.ts` files
+- [`../graph/README.md`](../graph/README.md), [`../renderer/README.md`](../renderer/README.md), [`../jsonld/README.md`](../jsonld/README.md), [`../demo/chatbot/README.md`](../demo/chatbot/README.md), [`../demo/story/README.md`](../demo/story/README.md) — each carries its own `*.test.ts` files
