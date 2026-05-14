@@ -9,6 +9,16 @@ export default defineConfig({
     host: true,
     // Allow the tailnet hostname + tailscale IPs.
     allowedHosts: true,
+    // mlx-lm binds 127.0.0.1 only, so the phone can't hit it directly.
+    // Proxy /llm/* through the dev server (which runs on the Mac alongside
+    // mlx-lm). Browser code uses relative /llm URLs; Node CLI bypasses this.
+    proxy: {
+      "/llm": {
+        target: "http://127.0.0.1:8080",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/llm/, ""),
+      },
+    },
   },
   build: {
     // Top-level await in main.tsx (seedDemoGraph) needs an esbuild target
