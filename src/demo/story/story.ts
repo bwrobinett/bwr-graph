@@ -13,14 +13,7 @@ import {
   importJsonLdDocument,
   type JsonLdDocument,
 } from "../../jsonld/import";
-import {
-  storyContext,
-  NODE_TYPE_STORY,
-  NODE_TYPE_SCENE,
-  NODE_TYPE_CHARACTER,
-  type SceneView,
-  type CharacterView,
-} from "./schema";
+import { storyContext } from "./schema";
 
 interface RootState {
   graph: GraphState;
@@ -28,14 +21,27 @@ interface RootState {
 
 type StoryStore = Store<RootState>;
 
+export interface SceneSummary {
+  id: string;
+  title: string;
+  body: string;
+  characterIds: string[];
+}
+
+export interface CharacterSummary {
+  id: string;
+  name: string;
+  description: string;
+}
+
 export interface Story {
   readonly storyId: NodeId;
-  addCharacter(name: string, description?: string): CharacterView;
-  addScene(title: string, body: string, characterIds?: NodeId[]): SceneView;
+  addCharacter(name: string, description?: string): CharacterSummary;
+  addScene(title: string, body: string, characterIds?: NodeId[]): SceneSummary;
   linkCharacterToScene(sceneId: NodeId, characterId: NodeId): void;
-  getScenes(): SceneView[];
-  getCharacters(): CharacterView[];
-  getScenesForCharacter(characterId: NodeId): SceneView[];
+  getScenes(): SceneSummary[];
+  getCharacters(): CharacterSummary[];
+  getScenesForCharacter(characterId: NodeId): SceneSummary[];
   toJsonLd(): JsonLdDocument;
   readonly store: StoryStore;
 }
@@ -57,7 +63,7 @@ export function createStory(options: CreateStoryOptions = {}): Story {
   store.dispatch(
     addNode({
       id: storyId,
-      type: NODE_TYPE_STORY,
+      type: "Story",
       title,
       scenes: [],
       characters: [],
@@ -78,7 +84,7 @@ export async function loadStory(
 
   const storyId =
     options.storyId ??
-    nodes.find((n) => n.type === NODE_TYPE_STORY)?.id ??
+    nodes.find((n) => n.type === "Story")?.id ??
     "story-1";
 
   const sceneIdGen = makeCounterIdGen("scene", nextCounter(nodes, "scene"));
@@ -93,12 +99,12 @@ function makeStoryApi(
   sceneIdGen: () => string,
   characterIdGen: () => string,
 ): Story {
-  const addCharacter = (name: string, description = ""): CharacterView => {
+  const addCharacter = (name: string, description = ""): CharacterSummary => {
     const id = characterIdGen();
     store.dispatch(
       addNode({
         id,
-        type: NODE_TYPE_CHARACTER,
+        type: "Character",
         name,
         description,
       }),
@@ -116,12 +122,12 @@ function makeStoryApi(
     title: string,
     body: string,
     characterIds: NodeId[] = [],
-  ): SceneView => {
+  ): SceneSummary => {
     const id = sceneIdGen();
     store.dispatch(
       addNode({
         id,
-        type: NODE_TYPE_SCENE,
+        type: "Scene",
         title,
         body,
         characters: [...characterIds],
@@ -145,7 +151,7 @@ function makeStoryApi(
     );
   };
 
-  const getCharacters = (): CharacterView[] => {
+  const getCharacters = (): CharacterSummary[] => {
     const characters = selectLinkedNodes(store.getState(), storyId, "characters");
     return characters.map((n) => ({
       id: n.id,
@@ -154,19 +160,19 @@ function makeStoryApi(
     }));
   };
 
-  const sceneToView = (sceneNode: ReturnType<StoryStore["getState"]>["graph"]["nodes"][string]): SceneView => ({
+  const sceneToSummary = (sceneNode: ReturnType<StoryStore["getState"]>["graph"]["nodes"][string]): SceneSummary => ({
     id: sceneNode.id,
     title: (sceneNode.title as string) ?? "",
     body: (sceneNode.body as string) ?? "",
     characterIds: selectLinkedIds(store.getState(), sceneNode.id, "characters"),
   });
 
-  const getScenes = (): SceneView[] => {
+  const getScenes = (): SceneSummary[] => {
     const scenes = selectLinkedNodes(store.getState(), storyId, "scenes");
-    return scenes.map(sceneToView);
+    return scenes.map(sceneToSummary);
   };
 
-  const getScenesForCharacter = (characterId: NodeId): SceneView[] => {
+  const getScenesForCharacter = (characterId: NodeId): SceneSummary[] => {
     return getScenes().filter((s) => s.characterIds.includes(characterId));
   };
 

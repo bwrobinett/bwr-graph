@@ -1,6 +1,6 @@
 # demo/composed/ — cross-schema composition showcase
 
-This is the punchline tab. It proves that schemas with **different vocabularies** — form's `componentKey`/`children`, chatbot's `id`/`messages`, story's `scenes`/`characters`, graph-view's generic — all coexist in one flat node dictionary and **compose through links + a merged registry**, with zero special infrastructure for cross-schema rendering.
+This is the punchline tab. It proves that schemas with **different vocabularies** — form's `children`, chatbot's `messages`, story's `scenes`/`characters`, graph-view's generic — all coexist in one flat node dictionary and **compose through links + a merged registry**, with zero special infrastructure for cross-schema rendering.
 
 ## What you see
 
@@ -33,11 +33,11 @@ Chatbot's `MessageView` doesn't know what a Form is. Form's `Form` component doe
 
 ## Files
 
-- `schema.ts` — `Composed` node type plus the `composedContext` (one link list: `panels`).
-- `seed.ts` — `composedDocument()` returns the `composed-1` root, the dedicated `conv-composed-1` conversation, and the cross-schema embed as a portable graph document.
+- `schema.ts` — Zod schema for the canonical `Composed` node plus the `composedContext` (one link list: `panels`).
+- `composedExampleGraph.ts` — JSON-like plain `GraphDocument` containing the `composed-1` root, the dedicated `conv-composed-1` conversation, and the cross-schema embed.
 - `components/ComposedView.tsx` — walks `panels` and dispatches each through `NodeRenderer`. Wraps each panel in a frame that shows the panel's node `type` as a badge, so the multi-schema composition is visually obvious.
 - `components/registry.ts` — registers `Composed` → `ComposedView` only. The composition magic is in `src/demo/registry.ts`'s merge.
 
 ## Why this is the last wave
 
-W1 split library from demo. W2 made the demo shell itself a graph. W3a proved one set of nodes can be rendered through a totally different registry. W3b/W3c proved schemas can diverge on identity property names (`componentKey` vs `id`). **W4 puts it all together**: different schemas, in one store, composing through real links, rendered through one merged registry. That's the architectural claim the project exists to make.
+W1 split library from demo. W2 made the demo shell itself a graph. W3a proved one set of nodes can be rendered through a totally different registry. W4 puts it all together: different schemas, in one store, composing through real links, rendered through one merged registry. That's the architectural claim the project exists to make.

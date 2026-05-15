@@ -15,10 +15,7 @@ import {
 } from "../../jsonld/import";
 import {
   chatbotContext,
-  NODE_TYPE_CONVERSATION,
-  NODE_TYPE_MESSAGE,
   type MessageRole,
-  type MessageView,
 } from "./schema";
 
 interface RootState {
@@ -27,10 +24,16 @@ interface RootState {
 
 type ChatbotStore = Store<RootState>;
 
+export interface MessageHistoryItem {
+  id: string;
+  role: MessageRole;
+  content: string;
+}
+
 export interface Chatbot {
   readonly conversationId: NodeId;
-  appendMessage(role: MessageRole, content: string): MessageView;
-  getHistory(): MessageView[];
+  appendMessage(role: MessageRole, content: string): MessageHistoryItem;
+  getHistory(): MessageHistoryItem[];
   toJsonLd(): JsonLdDocument;
   // For tests / inspection.
   readonly store: ChatbotStore;
@@ -55,18 +58,18 @@ export function createChatbot(options: CreateChatbotOptions = {}): Chatbot {
   store.dispatch(
     addNode({
       id: conversationId,
-      type: NODE_TYPE_CONVERSATION,
+      type: "Conversation",
       title,
       messages: [],
     }),
   );
 
-  const appendMessage = (role: MessageRole, content: string): MessageView => {
+  const appendMessage = (role: MessageRole, content: string): MessageHistoryItem => {
     const id = idGen();
     store.dispatch(
       addNode({
         id,
-        type: NODE_TYPE_MESSAGE,
+        type: "Message",
         role,
         content,
         parent: [conversationId],
@@ -81,7 +84,7 @@ export function createChatbot(options: CreateChatbotOptions = {}): Chatbot {
     return { id, role, content };
   };
 
-  const getHistory = (): MessageView[] => {
+  const getHistory = (): MessageHistoryItem[] => {
     const messages = selectLinkedNodes(store.getState(), conversationId, "messages");
     return messages.map((node) => ({
       id: node.id,
@@ -108,7 +111,7 @@ export async function loadChatbot(
 
   const conversationId =
     options.conversationId ??
-    nodes.find((n) => n.type === NODE_TYPE_CONVERSATION)?.id ??
+    nodes.find((n) => n.type === "Conversation")?.id ??
     "conv-1";
 
   // Continue ID generation past the existing messages.
@@ -119,12 +122,12 @@ export async function loadChatbot(
   const startAt = existingNumeric.length > 0 ? Math.max(...existingNumeric) + 1 : 1;
   const idGen = makeCounterIdGen(startAt);
 
-  const appendMessage = (role: MessageRole, content: string): MessageView => {
+  const appendMessage = (role: MessageRole, content: string): MessageHistoryItem => {
     const id = idGen();
     store.dispatch(
       addNode({
         id,
-        type: NODE_TYPE_MESSAGE,
+        type: "Message",
         role,
         content,
         parent: [conversationId],
@@ -139,7 +142,7 @@ export async function loadChatbot(
     return { id, role, content };
   };
 
-  const getHistory = (): MessageView[] => {
+  const getHistory = (): MessageHistoryItem[] => {
     const messages = selectLinkedNodes(store.getState(), conversationId, "messages");
     return messages.map((node) => ({
       id: node.id,

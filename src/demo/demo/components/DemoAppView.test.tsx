@@ -9,11 +9,7 @@ import {
 } from "../../../graph/slice";
 import { RegistryContext, type Registry } from "../../../renderer/RegistryContext";
 import { NodeRenderer } from "../../../renderer/NodeRenderer";
-import {
-  demoShellContext,
-  NODE_TYPE_DEMO_APP,
-  NODE_TYPE_DEMO_TAB,
-} from "../schema";
+import { demoShellContext } from "../schema";
 import { demoShellRegistry } from "./registry";
 
 // Two trivial showcase types so DemoAppView has something to dispatch into
@@ -43,7 +39,7 @@ function makeShellStore(initialActive = "a") {
   store.dispatch(
     addNode({
       id: "app-1",
-      type: NODE_TYPE_DEMO_APP,
+      type: "DemoApp",
       title: "Test app",
       tabs: ["tab-a", "tab-b"],
       activeDemo: initialActive,
@@ -52,7 +48,7 @@ function makeShellStore(initialActive = "a") {
   store.dispatch(
     addNode({
       id: "tab-a",
-      type: NODE_TYPE_DEMO_TAB,
+      type: "DemoTab",
       key: "a",
       label: "Alpha",
       target: ["showcase-a"],
@@ -62,7 +58,7 @@ function makeShellStore(initialActive = "a") {
   store.dispatch(
     addNode({
       id: "tab-b",
-      type: NODE_TYPE_DEMO_TAB,
+      type: "DemoTab",
       key: "b",
       label: "Beta",
       target: ["showcase-b"],

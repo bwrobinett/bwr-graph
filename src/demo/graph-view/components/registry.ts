@@ -1,5 +1,4 @@
 import type { Registry } from "../../../renderer/RegistryContext";
-import { NODE_TYPE_GRAPH_VIEW } from "../schema";
 import { GraphView } from "./GraphView";
 
 /**
@@ -11,5 +10,5 @@ import { GraphView } from "./GraphView";
  * `../../registry.ts`.
  */
 export const graphViewRegistry: Registry = {
-  [NODE_TYPE_GRAPH_VIEW]: GraphView,
+  GraphView,
 };

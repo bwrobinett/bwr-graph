@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type { JsonLdContext } from "../../graph/types";
 
 // JSON-LD context for the meta-showcase: the demo shell itself, rendered as
@@ -10,28 +11,38 @@ import type { JsonLdContext } from "../../graph/types";
 //   (`form-1`, `conv-1`, …).
 // - `app` (DemoTab → DemoApp): back-ref so a tab can dispatch updates against
 //   its owning app without the component knowing the app id at compile time.
-export const demoShellContext: JsonLdContext = {
+export const demoShellContext = {
   "@vocab": "http://bwr-graph.example/demo-shell/",
   tabs: { "@type": "@id", "@container": "@list" },
   target: { "@type": "@id" },
   app: { "@type": "@id" },
-};
+} satisfies JsonLdContext;
 
-export const NODE_TYPE_DEMO_APP = "DemoApp";
-export const NODE_TYPE_DEMO_TAB = "DemoTab";
+export const demoAppNodeSchema = z.object({
+  id: z.string(),
+  type: z.literal("DemoApp"),
+  title: z.string(),
+  tabs: z.array(z.string()),
+  activeDemo: z.string(),
+});
 
-/** View-model for the shell. `activeDemo` is the `key` of the active DemoTab. */
-export interface DemoAppView {
-  id: string;
-  title: string;
-  tabIds: string[];
-  activeDemo: string;
-}
+export const demoTabNodeSchema = z.object({
+  id: z.string(),
+  type: z.literal("DemoTab"),
+  key: z.string(),
+  label: z.string(),
+  target: z.array(z.string()),
+  app: z.array(z.string()),
+});
 
-/** View-model for a single tab. `key` is the hash slug; `targetId` is the showcase root. */
-export interface DemoTabView {
-  id: string;
-  key: string;
-  label: string;
-  targetId: string;
-}
+export const demoShellGraphNodeSchema = z.discriminatedUnion("type", [
+  demoAppNodeSchema,
+  demoTabNodeSchema,
+]);
+
+export const demoShellSchema = {
+  context: demoShellContext,
+  node: demoShellGraphNodeSchema,
+} as const;
+
+export type DemoShellGraphNode = z.infer<typeof demoShellGraphNodeSchema>;

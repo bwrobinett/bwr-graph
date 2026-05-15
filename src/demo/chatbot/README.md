@@ -4,7 +4,8 @@ Vertical-slice demo: a CLI chatbot whose conversation is a graph. Linear shape, 
 
 ## What's in here
 
-- `schema.ts` — `Conversation` and `Message` node types + the JSON-LD `@context` for them.
+- `schema.ts` — Zod schemas for canonical `Conversation` and `Message` nodes plus the JSON-LD `@context` for them.
+- `chatbotExampleGraph.ts` — JSON-like plain `GraphDocument` with the empty demo conversation.
 - `conversation.ts` — `createChatbot(...)` / `loadChatbot(...)`: wraps a Redux store with `appendUserTurn`, `appendAssistantTurn`, `getMessages`, `save`, `load`. All built on `addNode` + `insertLink`.
 - `responder.ts` — `Responder` interface (`(history) => Promise<string>`) plus `stubResponder` and `localLlmResponder` (POSTs to `mlx_lm.server` on `localhost:8080`). New responders drop in here.
 - `cli.ts` — `npm run chat` entry point. Interactive REPL with slash commands (`/help`, `/history`, `/save`, `/load`, `/responder`, `/quit`).

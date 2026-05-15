@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type { JsonLdContext } from "../../graph/types";
 
 // JSON-LD context for the composed showcase.
@@ -8,16 +9,21 @@ import type { JsonLdContext } from "../../graph/types";
 // from any schema, and the merged registry handles rendering. That's the
 // whole punchline — composition is just "link to anything; let the registry
 // dispatch."
-export const composedContext: JsonLdContext = {
+export const composedContext = {
   "@vocab": "http://bwr-graph.example/composed/",
   panels: { "@type": "@id", "@container": "@list" },
-};
+} satisfies JsonLdContext;
 
-export const NODE_TYPE_COMPOSED = "Composed";
+export const composedNodeSchema = z.object({
+  id: z.string(),
+  type: z.literal("Composed"),
+  title: z.string(),
+  panels: z.array(z.string()),
+});
 
-/** View-model for the composed root. `panelIds` is the list of subgraph roots to render. */
-export interface ComposedView {
-  id: string;
-  title: string;
-  panelIds: string[];
-}
+export const composedSchema = {
+  context: composedContext,
+  node: composedNodeSchema,
+} as const;
+
+export type ComposedGraphNode = z.infer<typeof composedNodeSchema>;

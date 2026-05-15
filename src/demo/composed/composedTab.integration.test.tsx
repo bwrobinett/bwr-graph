@@ -8,20 +8,12 @@ import { NodeRenderer } from "../../renderer/NodeRenderer";
 import { mergedDemoRegistry } from "../registry";
 import { ChatbotConfigContext } from "../chatbot/components/ChatbotConfigContext";
 import { stubResponder } from "../chatbot/responder";
-import { composedContext, NODE_TYPE_COMPOSED } from "./schema";
-import { storyContext, NODE_TYPE_STORY, NODE_TYPE_CHARACTER } from "../story/schema";
-import { formContext, NODE_TYPE_FORM, NODE_TYPE_FIELD } from "../form/schema";
-import {
-  chatbotContext,
-  NODE_TYPE_CONVERSATION,
-  NODE_TYPE_MESSAGE,
-} from "../chatbot/schema";
-import {
-  demoShellContext,
-  NODE_TYPE_DEMO_APP,
-  NODE_TYPE_DEMO_TAB,
-} from "../demo/schema";
-import { graphViewContext, NODE_TYPE_GRAPH_VIEW } from "../graph-view/schema";
+import { composedContext } from "./schema";
+import { storyContext } from "../story/schema";
+import { formContext } from "../form/schema";
+import { chatbotContext } from "../chatbot/schema";
+import { demoShellContext } from "../demo/schema";
+import { graphViewContext } from "../graph-view/schema";
 
 // End-to-end test driving the real merged registry against a hand-seeded
 // store that mirrors what `seedDemoGraph()` builds in production. Uses the
@@ -42,10 +34,10 @@ function makeFullStore() {
 
   // Minimal form subgraph.
   store.dispatch(
-    addNode({ id: "f-name", type: NODE_TYPE_FIELD, label: "Full name", value: "" }),
+    addNode({ id: "f-name", type: "Field", label: "Full name", value: "" }),
   );
   store.dispatch(
-    addNode({ id: "form-1", type: NODE_TYPE_FORM, title: "Intake form", children: [] }),
+    addNode({ id: "form-1", type: "Form", title: "Intake form", children: [] }),
   );
   store.dispatch(
     insertLink({ targetId: "f-name", at: { nodeId: "form-1", property: "children" } }),
@@ -53,17 +45,17 @@ function makeFullStore() {
 
   // Minimal chatbot subgraph (the regular Chat tab).
   store.dispatch(
-    addNode({ id: "conv-1", type: NODE_TYPE_CONVERSATION, title: "chat", messages: [] }),
+    addNode({ id: "conv-1", type: "Conversation", title: "chat", messages: [] }),
   );
 
   // Minimal story subgraph.
   store.dispatch(
-    addNode({ id: "char-alice", type: NODE_TYPE_CHARACTER, name: "Alice", description: "" }),
+    addNode({ id: "char-alice", type: "Character", name: "Alice", description: "" }),
   );
   store.dispatch(
     addNode({
       id: "story-1",
-      type: NODE_TYPE_STORY,
+      type: "Story",
       title: "Test story",
       scenes: [],
       characters: [],
@@ -78,14 +70,14 @@ function makeFullStore() {
 
   // Graph-view root.
   store.dispatch(
-    addNode({ id: "graph-view-1", type: NODE_TYPE_GRAPH_VIEW, title: "Graph view" }),
+    addNode({ id: "graph-view-1", type: "GraphView", title: "Graph view" }),
   );
 
   // Composed subgraph + cross-schema embed.
   store.dispatch(
     addNode({
       id: "conv-composed-1",
-      type: NODE_TYPE_CONVERSATION,
+      type: "Conversation",
       title: "Cross-schema chat",
       messages: [],
     }),
@@ -93,7 +85,7 @@ function makeFullStore() {
   store.dispatch(
     addNode({
       id: "msg-composed-embed",
-      type: NODE_TYPE_MESSAGE,
+      type: "Message",
       role: "system",
       content: "Here it is:",
       parent: ["conv-composed-1"],
@@ -116,7 +108,7 @@ function makeFullStore() {
   store.dispatch(
     addNode({
       id: "composed-1",
-      type: NODE_TYPE_COMPOSED,
+      type: "Composed",
       title: "Composed",
       panels: [],
     }),
@@ -131,7 +123,7 @@ function makeFullStore() {
   store.dispatch(
     addNode({
       id: "app-1",
-      type: NODE_TYPE_DEMO_APP,
+      type: "DemoApp",
       title: "bwr-graph demo",
       tabs: [],
       activeDemo: "form",
@@ -148,7 +140,7 @@ function makeFullStore() {
     store.dispatch(
       addNode({
         id: `tab-${tab.key}`,
-        type: NODE_TYPE_DEMO_TAB,
+        type: "DemoTab",
         key: tab.key,
         label: tab.label,
         target: [tab.targetId],
