@@ -46,3 +46,7 @@ export const demoShellSchema = {
 } as const;
 
 export type DemoShellGraphNode = z.infer<typeof demoShellGraphNodeSchema>;
+export type DemoShellGraphDocument = {
+  context: typeof demoShellContext;
+  nodes: { [id: string]: DemoShellGraphNode };
+};

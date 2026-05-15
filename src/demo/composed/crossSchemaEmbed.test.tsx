@@ -5,9 +5,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import { graphReducer, addNode, insertLink, setContext } from "../../graph/slice";
 import { RegistryContext, type Registry } from "../../renderer/RegistryContext";
 import { NodeRenderer } from "../../renderer/NodeRenderer";
-import { chatbotContext } from "../chatbot/schema";
+import { chatbotContext } from "../chatbot/chatbotSchema";
 import { chatbotRegistry } from "../chatbot/components/registry";
-import { formContext } from "../form/schema";
+import { formContext } from "../form/formSchema";
 import { formRegistry } from "../form/components/registry";
 import { ChatbotConfigContext } from "../chatbot/components/ChatbotConfigContext";
 import { stubResponder } from "../chatbot/responder";
@@ -75,7 +75,6 @@ describe("cross-schema embed (chatbot Message → Form)", () => {
         type: "Message",
         role: "system",
         content: "Here's the form:",
-        parent: ["conv-1"],
         embed: [],
       }),
     );
@@ -137,7 +136,6 @@ describe("cross-schema embed (chatbot Message → Form)", () => {
         type: "Message",
         role: "user",
         content: "plain message",
-        parent: ["conv-1"],
       }),
     );
     store.dispatch(

@@ -10,12 +10,12 @@ Everything that isn't the library lives here. The library — `graph/`, `rendere
 - `seed.ts` — composes per-showcase plain example graph objects and dispatches one `mergeGraph(...)`.
 - `registry.ts` — merged registry of every showcase plus the meta-shell. The single `RegistryContext.Provider` value at the top of the tree.
 - `hashSync.ts` — store subscriber that mirrors `state.graph.nodes["app-1"].activeDemo` ↔ `location.hash`. No React lifecycle for nav.
-- `form/`, `chatbot/`, `story/` — three domain showcases. Each owns its `schema.ts` (Zod node schemas + JSON-LD `@context`), runtime code, and (where relevant) `components/` + `cli.ts`.
+- `form/`, `chatbot/`, `story/` — three domain showcases. Each owns a domain-first schema file (for example, `formSchema.ts`), runtime code, and (where relevant) `components/` + `cli.ts`.
 - `demo/` — the meta-showcase: the demo shell rendered as a graph. `DemoApp` and `DemoTab` are node types; clicks dispatch `updateNode`.
 
 ## Convention
 
-Each showcase is self-contained: schema in `schema.ts`, JSON-like example graph data alongside, runtime/factory functions where needed, React components under `components/`, CLI entry under `cli.ts`. No showcase reaches into another's internals.
+Each showcase is self-contained: domain-first schema and example graph files live alongside runtime/factory functions where needed, React components under `components/`, and CLI entry points under `cli.ts`. No showcase reaches into another's internals.
 
 ## See also
 

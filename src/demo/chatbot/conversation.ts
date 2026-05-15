@@ -16,7 +16,7 @@ import {
 import {
   chatbotContext,
   type MessageRole,
-} from "./schema";
+} from "./chatbotSchema";
 
 interface RootState {
   graph: GraphState;
@@ -72,7 +72,6 @@ export function createChatbot(options: CreateChatbotOptions = {}): Chatbot {
         type: "Message",
         role,
         content,
-        parent: [conversationId],
       }),
     );
     store.dispatch(
@@ -130,7 +129,6 @@ export async function loadChatbot(
         type: "Message",
         role,
         content,
-        parent: [conversationId],
       }),
     );
     store.dispatch(

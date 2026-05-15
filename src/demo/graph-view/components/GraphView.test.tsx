@@ -5,7 +5,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { graphReducer, addNode, setContext } from "../../../graph/slice";
 import { RegistryContext, type Registry } from "../../../renderer/RegistryContext";
 import { NodeRenderer } from "../../../renderer/NodeRenderer";
-import { graphViewContext } from "../schema";
+import { graphViewContext } from "../graphViewSchema";
 import { graphViewRegistry } from "./registry";
 
 // A native renderer for `Message` that the graph-view tab should NOT pick up

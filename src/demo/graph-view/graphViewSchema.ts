@@ -25,3 +25,7 @@ export const graphViewSchema = {
 } as const;
 
 export type GraphViewGraphNode = z.infer<typeof graphViewNodeSchema>;
+export type GraphViewGraphDocument = {
+  context: typeof graphViewContext;
+  nodes: { [id: string]: GraphViewGraphNode };
+};

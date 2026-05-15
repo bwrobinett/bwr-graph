@@ -13,7 +13,7 @@ import {
   importJsonLdDocument,
   type JsonLdDocument,
 } from "../../jsonld/import";
-import { storyContext } from "./schema";
+import { storyContext } from "./storySchema";
 
 interface RootState {
   graph: GraphState;

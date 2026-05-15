@@ -6,7 +6,7 @@ import {
   setContext,
   updateNode,
 } from "../graph/slice";
-import { demoShellContext } from "./demo/schema";
+import { demoShellContext } from "./demo/demoShellSchema";
 import { syncHashWithStore } from "./hashSync";
 
 function makeStore(activeDemo = "form") {

@@ -38,7 +38,7 @@ describe("createChatbot", () => {
     expect(bot.appendMessage("assistant", "y").id).toBe("m101");
   });
 
-  it("stores Message nodes with role + content + parent link", () => {
+  it("stores Message nodes with role + content", () => {
     const bot = createChatbot();
     bot.appendMessage("user", "Hi");
     const state = bot.store.getState();
@@ -46,7 +46,6 @@ describe("createChatbot", () => {
     expect(msg.type).toBe("Message");
     expect(msg.role).toBe("user");
     expect(msg.content).toBe("Hi");
-    expect(msg.parent).toEqual(["conv-1"]);
   });
 });
 
