@@ -39,7 +39,7 @@ The library lives at the top of `src/`. Everything else is under `src/demo/`. Ea
 
 **Demo** ([`src/demo/`](src/demo/README.md)):
 
-- `App.tsx`, `main.tsx`, `store.ts`, `seed.ts` — Vite entry + demo shell + Redux store + seed
+- `App.tsx`, `main.tsx`, `store.ts`, `seed.ts` — Vite entry + demo shell + Redux store + composed example graph boot
 - [`form/`](src/demo/form/README.md) — form-builder showcase (React)
 - [`chatbot/`](src/demo/chatbot/README.md) — chatbot showcase (browser + CLI)
 - [`story/`](src/demo/story/README.md) — story DAG showcase (CLI)

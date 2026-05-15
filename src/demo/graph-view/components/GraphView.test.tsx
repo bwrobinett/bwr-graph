@@ -5,7 +5,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { graphReducer, addNode, setContext } from "../../../graph/slice";
 import { RegistryContext, type Registry } from "../../../renderer/RegistryContext";
 import { NodeRenderer } from "../../../renderer/NodeRenderer";
-import { graphViewContext, NODE_TYPE_GRAPH_VIEW } from "../schema";
+import { graphViewContext } from "../schema";
 import { graphViewRegistry } from "./registry";
 
 // A native renderer for `Message` that the graph-view tab should NOT pick up
@@ -21,7 +21,7 @@ function makeStore() {
   store.dispatch(
     addNode({
       id: "graph-view-1",
-      type: NODE_TYPE_GRAPH_VIEW,
+      type: "GraphView",
       title: "Graph view",
     }),
   );

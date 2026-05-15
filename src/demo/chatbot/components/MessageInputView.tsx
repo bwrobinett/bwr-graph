@@ -6,11 +6,8 @@ import {
   selectNode,
   type RootState,
 } from "../../../graph/selectors";
-import {
-  NODE_TYPE_MESSAGE,
-  type MessageRole,
-  type MessageView as MessageViewModel,
-} from "../schema";
+import type { MessageRole } from "../schema";
+import type { MessageHistoryItem } from "../conversation";
 import type { Responder } from "../responder";
 
 interface MessageInputViewProps {
@@ -56,7 +53,7 @@ export function MessageInputView({
     return `msg-${Date.now()}-${counterRef.current}`;
   }, [idGen]);
 
-  const readHistory = useCallback((): MessageViewModel[] => {
+  const readHistory = useCallback((): MessageHistoryItem[] => {
     const messages = selectLinkedNodes(store.getState(), conversationId, "messages");
     return messages.map((n) => ({
       id: n.id,
@@ -79,7 +76,7 @@ export function MessageInputView({
       dispatch(
         addNode({
           id: userId,
-          type: NODE_TYPE_MESSAGE,
+          type: "Message",
           role: "user",
           content: text,
           parent: [conversationId],
@@ -98,7 +95,7 @@ export function MessageInputView({
       dispatch(
         addNode({
           id: assistantId,
-          type: NODE_TYPE_MESSAGE,
+          type: "Message",
           role: "assistant",
           content: "",
           parent: [conversationId],

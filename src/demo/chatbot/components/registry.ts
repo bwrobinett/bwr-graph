@@ -1,5 +1,4 @@
 import type { Registry } from "../../../renderer/RegistryContext";
-import { NODE_TYPE_CONVERSATION, NODE_TYPE_MESSAGE } from "../schema";
 import { ConversationView } from "./ConversationView";
 import { MessageView } from "./MessageView";
 
@@ -10,6 +9,6 @@ import { MessageView } from "./MessageView";
  * down.
  */
 export const chatbotRegistry: Registry = {
-  [NODE_TYPE_CONVERSATION]: ConversationView,
-  [NODE_TYPE_MESSAGE]: MessageView,
+  Conversation: ConversationView,
+  Message: MessageView,
 };

@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type { JsonLdContext } from "../../graph/types";
 
 // JSON-LD context for the graph-view showcase.
@@ -8,14 +9,19 @@ import type { JsonLdContext } from "../../graph/types";
 // actually needs is its own vocab; it does not declare any link properties of
 // its own. (The cards walk every other showcase's links by reading the
 // already-merged top-level `state.graph.context`.)
-export const graphViewContext: JsonLdContext = {
+export const graphViewContext = {
   "@vocab": "http://bwr-graph.example/graph-view/",
-};
+} satisfies JsonLdContext;
 
-export const NODE_TYPE_GRAPH_VIEW = "GraphView";
+export const graphViewNodeSchema = z.object({
+  id: z.string(),
+  type: z.literal("GraphView"),
+  title: z.string(),
+});
 
-/** View-model for the root node. Currently just the title. */
-export interface GraphViewView {
-  id: string;
-  title: string;
-}
+export const graphViewSchema = {
+  context: graphViewContext,
+  node: graphViewNodeSchema,
+} as const;
+
+export type GraphViewGraphNode = z.infer<typeof graphViewNodeSchema>;

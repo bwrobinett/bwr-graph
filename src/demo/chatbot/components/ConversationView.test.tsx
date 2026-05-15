@@ -5,7 +5,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { graphReducer, addNode, insertLink, setContext } from "../../../graph/slice";
 import { RegistryContext } from "../../../renderer/RegistryContext";
 import { NodeRenderer } from "../../../renderer/NodeRenderer";
-import { chatbotContext, NODE_TYPE_CONVERSATION, NODE_TYPE_MESSAGE } from "../schema";
+import { chatbotContext } from "../schema";
 import { chatbotRegistry } from "./registry";
 import { ChatbotConfigContext } from "./ChatbotConfigContext";
 import type { Responder } from "../responder";
@@ -18,7 +18,7 @@ function makeChatStore() {
   store.dispatch(
     addNode({
       id: "conv-1",
-      type: NODE_TYPE_CONVERSATION,
+      type: "Conversation",
       title: "Test chat",
       messages: [],
     }),
@@ -35,7 +35,7 @@ function addMessage(
   store.dispatch(
     addNode({
       id,
-      type: NODE_TYPE_MESSAGE,
+      type: "Message",
       role,
       content,
       parent: ["conv-1"],

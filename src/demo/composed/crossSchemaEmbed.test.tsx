@@ -5,13 +5,9 @@ import { configureStore } from "@reduxjs/toolkit";
 import { graphReducer, addNode, insertLink, setContext } from "../../graph/slice";
 import { RegistryContext, type Registry } from "../../renderer/RegistryContext";
 import { NodeRenderer } from "../../renderer/NodeRenderer";
-import {
-  chatbotContext,
-  NODE_TYPE_CONVERSATION,
-  NODE_TYPE_MESSAGE,
-} from "../chatbot/schema";
+import { chatbotContext } from "../chatbot/schema";
 import { chatbotRegistry } from "../chatbot/components/registry";
-import { formContext, NODE_TYPE_FORM, NODE_TYPE_FIELD } from "../form/schema";
+import { formContext } from "../form/schema";
 import { formRegistry } from "../form/components/registry";
 import { ChatbotConfigContext } from "../chatbot/components/ChatbotConfigContext";
 import { stubResponder } from "../chatbot/responder";
@@ -43,7 +39,7 @@ describe("cross-schema embed (chatbot Message → Form)", () => {
     store.dispatch(
       addNode({
         id: "f-name",
-        type: NODE_TYPE_FIELD,
+        type: "Field",
         label: "Full name",
         value: "",
       }),
@@ -51,7 +47,7 @@ describe("cross-schema embed (chatbot Message → Form)", () => {
     store.dispatch(
       addNode({
         id: "form-1",
-        type: NODE_TYPE_FORM,
+        type: "Form",
         title: "Intake form",
         children: [],
       }),
@@ -68,7 +64,7 @@ describe("cross-schema embed (chatbot Message → Form)", () => {
     store.dispatch(
       addNode({
         id: "conv-1",
-        type: NODE_TYPE_CONVERSATION,
+        type: "Conversation",
         title: "demo",
         messages: [],
       }),
@@ -76,7 +72,7 @@ describe("cross-schema embed (chatbot Message → Form)", () => {
     store.dispatch(
       addNode({
         id: "msg-1",
-        type: NODE_TYPE_MESSAGE,
+        type: "Message",
         role: "system",
         content: "Here's the form:",
         parent: ["conv-1"],
@@ -138,7 +134,7 @@ describe("cross-schema embed (chatbot Message → Form)", () => {
     store.dispatch(
       addNode({
         id: "msg-2",
-        type: NODE_TYPE_MESSAGE,
+        type: "Message",
         role: "user",
         content: "plain message",
         parent: ["conv-1"],

@@ -6,7 +6,7 @@ import {
   setContext,
   updateNode,
 } from "../graph/slice";
-import { demoShellContext, NODE_TYPE_DEMO_APP } from "./demo/schema";
+import { demoShellContext } from "./demo/schema";
 import { syncHashWithStore } from "./hashSync";
 
 function makeStore(activeDemo = "form") {
@@ -15,7 +15,7 @@ function makeStore(activeDemo = "form") {
   store.dispatch(
     addNode({
       id: "app-1",
-      type: NODE_TYPE_DEMO_APP,
+      type: "DemoApp",
       title: "test",
       tabs: [],
       activeDemo,

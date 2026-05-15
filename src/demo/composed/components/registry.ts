@@ -1,5 +1,4 @@
 import type { Registry } from "../../../renderer/RegistryContext";
-import { NODE_TYPE_COMPOSED } from "../schema";
 import { ComposedView } from "./ComposedView";
 
 /**
@@ -8,5 +7,5 @@ import { ComposedView } from "./ComposedView";
  * other showcase, which is what makes the cross-schema rendering work.
  */
 export const composedRegistry: Registry = {
-  [NODE_TYPE_COMPOSED]: ComposedView,
+  Composed: ComposedView,
 };

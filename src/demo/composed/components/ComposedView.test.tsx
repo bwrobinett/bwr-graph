@@ -5,7 +5,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { graphReducer, addNode, insertLink, setContext } from "../../../graph/slice";
 import { RegistryContext, type Registry } from "../../../renderer/RegistryContext";
 import { NodeRenderer } from "../../../renderer/NodeRenderer";
-import { composedContext, NODE_TYPE_COMPOSED } from "../schema";
+import { composedContext } from "../schema";
 import { composedRegistry } from "./registry";
 
 // Stand-in showcase types — keep this test focused on the cross-schema
@@ -43,7 +43,7 @@ function makeStore() {
   store.dispatch(
     addNode({
       id: "composed-1",
-      type: NODE_TYPE_COMPOSED,
+      type: "Composed",
       title: "Composed",
       panels: [],
     }),
@@ -109,7 +109,7 @@ describe("ComposedView", () => {
     store.dispatch(
       addNode({
         id: "composed-1",
-        type: NODE_TYPE_COMPOSED,
+        type: "Composed",
         title: "Empty",
         panels: [],
       }),

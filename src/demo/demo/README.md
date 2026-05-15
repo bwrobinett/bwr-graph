@@ -4,11 +4,11 @@ This is the demo of the demo. The shell that hosts the form and chat tabs is its
 
 ## Files
 
-- `schema.ts` — `DemoApp` and `DemoTab` node types, plus the `demoShellContext` JSON-LD context that declares `tabs`, `target`, and `app` as link properties.
+- `schema.ts` — Zod schemas for canonical `DemoApp` and `DemoTab` nodes, plus the `demoShellContext` JSON-LD context that declares `tabs`, `target`, and `app` as link properties.
 - `components/DemoAppView.tsx` — renders the title, walks `tabs` via `NodeRenderer`, and dispatches the active tab's `target` into another `NodeRenderer` for the showcase subtree.
 - `components/DemoTabView.tsx` — clickable nav button. Reads `app` back-ref off the tab so it can `dispatch(updateNode({ id: appId, activeDemo: tab.key }))` without compile-time knowledge of the app id.
 - `components/registry.ts` — registers `DemoApp` and `DemoTab`. Composed into the merged registry at `../registry.ts`.
-- `seed.ts` — `demoShellDocument(tabs, initialKey)`: returns `app-1` plus one `DemoTab` per entry as a portable graph document. The list of showcases lives one level up in `../seed.ts`.
+- `demoShellExampleGraph.ts` — JSON-like plain `GraphDocument` containing `app-1` plus one `DemoTab` per showcase.
 
 ## Why
 

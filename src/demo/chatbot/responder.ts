@@ -1,4 +1,4 @@
-import type { MessageView } from "./schema";
+import type { MessageHistoryItem } from "./conversation";
 
 // Per-call options the responder may consult. Currently just the system
 // prompt the conversation node carries. Optional so existing callers and the
@@ -11,7 +11,7 @@ export interface ResponderOptions {
 // (which already includes the latest user turn). The graph store doesn't know
 // or care whether this is a stub, a local LLM, or an API call.
 export type Responder = (
-  history: MessageView[],
+  history: MessageHistoryItem[],
   options?: ResponderOptions,
 ) => Promise<string>;
 
