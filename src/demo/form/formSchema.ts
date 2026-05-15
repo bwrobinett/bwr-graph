@@ -41,3 +41,7 @@ export const formSchema = {
 } as const;
 
 export type FormGraphNode = z.infer<typeof formGraphNodeSchema>;
+export type FormGraphDocument = {
+  context: typeof formContext;
+  nodes: { [id: string]: FormGraphNode };
+};

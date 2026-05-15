@@ -8,12 +8,12 @@ import { NodeRenderer } from "../../renderer/NodeRenderer";
 import { mergedDemoRegistry } from "../registry";
 import { ChatbotConfigContext } from "../chatbot/components/ChatbotConfigContext";
 import { stubResponder } from "../chatbot/responder";
-import { composedContext } from "./schema";
-import { storyContext } from "../story/schema";
-import { formContext } from "../form/schema";
-import { chatbotContext } from "../chatbot/schema";
-import { demoShellContext } from "../demo/schema";
-import { graphViewContext } from "../graph-view/schema";
+import { composedContext } from "./composedSchema";
+import { storyContext } from "../story/storySchema";
+import { formContext } from "../form/formSchema";
+import { chatbotContext } from "../chatbot/chatbotSchema";
+import { demoShellContext } from "../demo/demoShellSchema";
+import { graphViewContext } from "../graph-view/graphViewSchema";
 
 // End-to-end test driving the real merged registry against a hand-seeded
 // store that mirrors what `seedDemoGraph()` builds in production. Uses the
@@ -88,7 +88,6 @@ function makeFullStore() {
       type: "Message",
       role: "system",
       content: "Here it is:",
-      parent: ["conv-composed-1"],
       embed: [],
     }),
   );

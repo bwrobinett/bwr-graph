@@ -1,5 +1,4 @@
-import type { GraphDocument } from "../../graph/types";
-import { composedSchema } from "./schema";
+import { composedSchema, type ComposedGraphDocument } from "./composedSchema";
 
 export const composedExampleGraph = {
   context: composedSchema.context,
@@ -15,14 +14,12 @@ export const composedExampleGraph = {
       type: "Message",
       role: "user",
       content: "Can you show me the intake form?",
-      parent: ["conv-composed-1"],
     },
     "msg-composed-embed": {
       id: "msg-composed-embed",
       type: "Message",
       role: "system",
       content: "Here it is - rendered inside this message through the merged registry:",
-      parent: ["conv-composed-1"],
       embed: ["form-1"],
     },
     "composed-1": {
@@ -32,4 +29,4 @@ export const composedExampleGraph = {
       panels: ["conv-composed-1", "form-1", "story-1", "graph-view-1"],
     },
   },
-} satisfies GraphDocument;
+} satisfies ComposedGraphDocument;

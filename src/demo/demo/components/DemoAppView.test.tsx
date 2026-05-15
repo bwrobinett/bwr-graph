@@ -9,7 +9,7 @@ import {
 } from "../../../graph/slice";
 import { RegistryContext, type Registry } from "../../../renderer/RegistryContext";
 import { NodeRenderer } from "../../../renderer/NodeRenderer";
-import { demoShellContext } from "../schema";
+import { demoShellContext } from "../demoShellSchema";
 import { demoShellRegistry } from "./registry";
 
 // Two trivial showcase types so DemoAppView has something to dispatch into

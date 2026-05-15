@@ -1,5 +1,4 @@
-import type { GraphDocument } from "../../graph/types";
-import { storySchema } from "./schema";
+import { storySchema, type StoryGraphDocument } from "./storySchema";
 
 export const storyExampleGraph = {
   context: storySchema.context,
@@ -51,4 +50,4 @@ export const storyExampleGraph = {
       characters: ["char-alice", "char-bob", "char-carol"],
     },
   },
-} satisfies GraphDocument;
+} satisfies StoryGraphDocument;

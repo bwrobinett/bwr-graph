@@ -1,5 +1,4 @@
-import type { GraphDocument } from "../../graph/types";
-import { demoShellSchema } from "./schema";
+import { demoShellSchema, type DemoShellGraphDocument } from "./demoShellSchema";
 
 export const demoShellExampleGraph = {
   context: demoShellSchema.context,
@@ -58,4 +57,4 @@ export const demoShellExampleGraph = {
       app: ["app-1"],
     },
   },
-} satisfies GraphDocument;
+} satisfies DemoShellGraphDocument;

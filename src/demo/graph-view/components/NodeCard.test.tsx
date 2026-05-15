@@ -155,7 +155,6 @@ describe("NodeCard", () => {
         type: "Message",
         role: "user",
         content: "hi",
-        parent: ["conv-1"],
       }),
     );
     store.dispatch(

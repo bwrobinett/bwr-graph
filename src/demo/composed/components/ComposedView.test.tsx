@@ -5,7 +5,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { graphReducer, addNode, insertLink, setContext } from "../../../graph/slice";
 import { RegistryContext, type Registry } from "../../../renderer/RegistryContext";
 import { NodeRenderer } from "../../../renderer/NodeRenderer";
-import { composedContext } from "../schema";
+import { composedContext } from "../composedSchema";
 import { composedRegistry } from "./registry";
 
 // Stand-in showcase types — keep this test focused on the cross-schema

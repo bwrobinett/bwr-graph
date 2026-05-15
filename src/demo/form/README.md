@@ -4,8 +4,8 @@ Form-builder showcase. The first vertical slice: a tree-shaped React UI driven e
 
 ## What's in here
 
-- `schema.ts` — Zod schemas for canonical `Form` / `Section` / `Field` nodes plus `formContext` JSON-LD `@context`.
-- `formExampleGraph.ts` — JSON-like plain `GraphDocument` for the top-level demo.
+- `formSchema.ts` — Zod schemas for canonical `Form` / `Section` / `Field` nodes plus `formContext` JSON-LD `@context`.
+- `formExampleGraph.ts` — JSON-like plain `GraphDocument` used by the top-level demo seed.
 - `components/` — React components (`Form`, `Section`, `Field`) plus `registry.ts` mapping node types to components.
 - `schema.test.ts` — proves the Zod node shapes, JSON-LD round-trip, and form/chatbot coexistence in one store.
 
@@ -17,6 +17,6 @@ The internal node shape is canonical and ergonomic: every node has `id` and `typ
 
 ## See also
 
-- [`./schema.ts`](./schema.ts) — node types + context
+- [`./formSchema.ts`](./formSchema.ts) — node types + context
 - [`./components/README.md`](./components/README.md) — the React components
 - [`../../renderer/README.md`](../../renderer/README.md) — the renderer that dispatches into this registry

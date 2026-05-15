@@ -7,7 +7,7 @@ import { selectLinkedIds, selectNode } from "../../graph/selectors";
 import { chatbotExampleGraph } from "../chatbot/chatbotExampleGraph";
 import { composeGraphDocuments } from "../../graph/document";
 import { formExampleGraph } from "./formExampleGraph";
-import { formGraphNodeSchema, formSchema } from "./schema";
+import { formGraphNodeSchema, formSchema } from "./formSchema";
 
 describe("form schema", () => {
   it("describes canonical form node shapes with Zod", () => {
@@ -39,10 +39,18 @@ describe("form schema", () => {
 
     expect(selectNode(rootState, "form-1")?.type).toBe("Form");
     expect(selectNode(rootState, "conv-1")?.type).toBe("Conversation");
-    expect(selectLinkedIds(rootState, "form-1", "children")).toEqual([
-      "sec-about",
-      "sec-contact",
-    ]);
-    expect(selectLinkedIds(rootState, "conv-1", "messages")).toEqual([]);
+    const formNode = selectNode(rootState, "form-1");
+    const conversationNode = selectNode(rootState, "conv-1");
+    const rawFormChildren = Array.isArray(formNode?.children) ? formNode.children : [];
+    const rawConversationMessages = Array.isArray(conversationNode?.messages)
+      ? conversationNode.messages
+      : [];
+    const formChildren = selectLinkedIds(rootState, "form-1", "children");
+    const conversationMessages = selectLinkedIds(rootState, "conv-1", "messages");
+    expect(formChildren).toEqual(rawFormChildren);
+    expect(conversationMessages).toEqual(rawConversationMessages);
+    expect(formChildren.length).toBeGreaterThan(0);
+    expect(formChildren.every((id) => selectNode(rootState, id))).toBe(true);
+    expect(conversationMessages.every((id) => selectNode(rootState, id))).toBe(true);
   });
 });

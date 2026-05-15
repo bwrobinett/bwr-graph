@@ -6,7 +6,7 @@ import {
   selectNode,
   type RootState,
 } from "../../../graph/selectors";
-import type { MessageRole } from "../schema";
+import type { MessageRole } from "../chatbotSchema";
 import type { MessageHistoryItem } from "../conversation";
 import type { Responder } from "../responder";
 
@@ -79,7 +79,6 @@ export function MessageInputView({
           type: "Message",
           role: "user",
           content: text,
-          parent: [conversationId],
         }),
       );
       dispatch(
@@ -98,7 +97,6 @@ export function MessageInputView({
           type: "Message",
           role: "assistant",
           content: "",
-          parent: [conversationId],
         }),
       );
       dispatch(

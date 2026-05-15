@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { JsonLdContext } from "../../graph/types";
+import type { ChatbotGraphNode } from "../chatbot/chatbotSchema";
 
 // JSON-LD context for the composed showcase.
 //
@@ -27,3 +28,7 @@ export const composedSchema = {
 } as const;
 
 export type ComposedGraphNode = z.infer<typeof composedNodeSchema>;
+export type ComposedGraphDocument = {
+  context: typeof composedContext;
+  nodes: { [id: string]: ComposedGraphNode | ChatbotGraphNode };
+};

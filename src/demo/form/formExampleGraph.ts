@@ -1,5 +1,4 @@
-import type { GraphDocument } from "../../graph/types";
-import { formSchema } from "./schema";
+import { formSchema, type FormGraphDocument } from "./formSchema";
 
 export const formExampleGraph = {
   context: formSchema.context,
@@ -47,4 +46,4 @@ export const formExampleGraph = {
       value: "",
     },
   },
-} satisfies GraphDocument;
+} satisfies FormGraphDocument;

@@ -45,3 +45,7 @@ export const storySchema = {
 } as const;
 
 export type StoryGraphNode = z.infer<typeof storyGraphNodeSchema>;
+export type StoryGraphDocument = {
+  context: typeof storyContext;
+  nodes: { [id: string]: StoryGraphNode };
+};

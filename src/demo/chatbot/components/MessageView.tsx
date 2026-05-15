@@ -5,7 +5,7 @@ import {
   type RootState,
 } from "../../../graph/selectors";
 import { NodeRenderer } from "../../../renderer/NodeRenderer";
-import type { MessageRole } from "../schema";
+import type { MessageRole } from "../chatbotSchema";
 
 /**
  * Renders a single `Message` node as a chat bubble. Style branches on `role`

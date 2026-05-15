@@ -1,5 +1,4 @@
-import type { GraphDocument } from "../../graph/types";
-import { graphViewSchema } from "./schema";
+import { graphViewSchema, type GraphViewGraphDocument } from "./graphViewSchema";
 
 export const graphViewExampleGraph = {
   context: graphViewSchema.context,
@@ -10,4 +9,4 @@ export const graphViewExampleGraph = {
       title: "Graph view",
     },
   },
-} satisfies GraphDocument;
+} satisfies GraphViewGraphDocument;

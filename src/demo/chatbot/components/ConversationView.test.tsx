@@ -5,7 +5,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { graphReducer, addNode, insertLink, setContext } from "../../../graph/slice";
 import { RegistryContext } from "../../../renderer/RegistryContext";
 import { NodeRenderer } from "../../../renderer/NodeRenderer";
-import { chatbotContext } from "../schema";
+import { chatbotContext } from "../chatbotSchema";
 import { chatbotRegistry } from "./registry";
 import { ChatbotConfigContext } from "./ChatbotConfigContext";
 import type { Responder } from "../responder";
@@ -38,7 +38,6 @@ function addMessage(
       type: "Message",
       role,
       content,
-      parent: ["conv-1"],
     }),
   );
   store.dispatch(
