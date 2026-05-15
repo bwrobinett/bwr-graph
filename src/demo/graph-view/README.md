@@ -8,7 +8,7 @@ This showcase renders **every node in the store** generically, regardless of its
 - `components/GraphView.tsx` — reads `state.graph.nodes`, sorts by type then id, and renders each via `NodeCard`. Wraps the subtree in a `RegistryOverride` so any nested `<NodeRenderer />` calls also resolve to `NodeCard`.
 - `components/NodeCard.tsx` — generic display: type badge, id, properties as key/value rows. Uses `isLinkProperty(state.graph.context, prop)` to decide which arrays are link arrays (rendered as expandable nested cards) vs literal arrays (rendered as JSON).
 - `components/registry.ts` — registers `GraphView` only. The "every type renders as NodeCard" behavior is a `RegistryOverride` inside `GraphView`, scoped to the subtree.
-- `seed.ts` — `seedGraphView()` adds the `graph-view-1` root.
+- `seed.ts` — `graphViewDocument()` returns the `graph-view-1` root as a portable graph document.
 
 ## Why
 

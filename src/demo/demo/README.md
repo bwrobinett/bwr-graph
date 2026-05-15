@@ -8,7 +8,7 @@ This is the demo of the demo. The shell that hosts the form and chat tabs is its
 - `components/DemoAppView.tsx` — renders the title, walks `tabs` via `NodeRenderer`, and dispatches the active tab's `target` into another `NodeRenderer` for the showcase subtree.
 - `components/DemoTabView.tsx` — clickable nav button. Reads `app` back-ref off the tab so it can `dispatch(updateNode({ id: appId, activeDemo: tab.key }))` without compile-time knowledge of the app id.
 - `components/registry.ts` — registers `DemoApp` and `DemoTab`. Composed into the merged registry at `../registry.ts`.
-- `seed.ts` — `seedDemoShell(tabs, initialKey)`: creates `app-1` plus one `DemoTab` per entry. The list of showcases lives one level up in `../seed.ts`.
+- `seed.ts` — `demoShellDocument(tabs, initialKey)`: returns `app-1` plus one `DemoTab` per entry as a portable graph document. The list of showcases lives one level up in `../seed.ts`.
 
 ## Why
 

@@ -1,5 +1,5 @@
-import { addNode, setContext } from "../../graph/slice";
-import { store } from "../store";
+import { graphDocument } from "../../graph/document";
+import type { GraphDocument } from "../../graph/types";
 import {
   demoShellContext,
   NODE_TYPE_DEMO_APP,
@@ -8,8 +8,9 @@ import {
 
 /**
  * Static description of a tab: which key (hash slug) it uses, what to display
- * in the nav, and which graph node id is its showcase root. The seed turns
- * each entry into a `DemoTab` node and links it onto `app-1.tabs`.
+ * in the nav, and which graph node id is its showcase root. The document
+ * factory turns each entry into a `DemoTab` node and links it onto
+ * `app-1.tabs`.
  */
 export interface DemoTabSeed {
   key: string;
@@ -18,38 +19,37 @@ export interface DemoTabSeed {
 }
 
 /**
- * Seed the meta-showcase: one `DemoApp` node + one `DemoTab` per showcase.
- * Idempotent — uses `addNode`, which is a no-op for existing ids.
+ * Portable meta-showcase document: one `DemoApp` node + one `DemoTab` per
+ * showcase.
  *
  * Caller passes the list of tabs (so demo/seed.ts owns the wiring of which
  * showcases exist; this file owns only the meta-shape).
  */
-export function seedDemoShell(tabs: DemoTabSeed[], initialKey?: string): void {
-  store.dispatch(setContext({ context: demoShellContext, merge: true }));
-
+export function demoShellDocument(
+  tabs: DemoTabSeed[],
+  initialKey?: string,
+): GraphDocument {
   const tabIds = tabs.map((t) => `tab-${t.key}`);
   const activeDemo = initialKey ?? tabs[0]?.key ?? "";
 
-  store.dispatch(
-    addNode({
-      id: "app-1",
-      type: NODE_TYPE_DEMO_APP,
-      title: "bwr-graph demo",
-      tabs: tabIds,
-      activeDemo,
-    }),
-  );
-
-  for (const tab of tabs) {
-    store.dispatch(
-      addNode({
+  return graphDocument(
+    [
+      {
+        id: "app-1",
+        type: NODE_TYPE_DEMO_APP,
+        title: "bwr-graph demo",
+        tabs: tabIds,
+        activeDemo,
+      },
+      ...tabs.map((tab) => ({
         id: `tab-${tab.key}`,
         type: NODE_TYPE_DEMO_TAB,
         key: tab.key,
         label: tab.label,
         target: [tab.targetId],
         app: ["app-1"],
-      }),
-    );
-  }
+      })),
+    ],
+    demoShellContext,
+  );
 }

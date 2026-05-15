@@ -1,12 +1,14 @@
 import jsonld from "jsonld";
 import type {
   GraphNode,
+  GraphDocument,
   JsonLdContext,
   ContextEntry,
   NodePropertyValue,
   Primitive,
 } from "../graph/types";
 import { stripIdTypeAliases } from "../graph/context";
+import { graphDocument } from "../graph/document";
 
 // A JSON-LD document, in any of compact, expanded, or flattened form.
 export type JsonLdDocument =
@@ -62,6 +64,13 @@ export async function importJsonLd(doc: JsonLdDocument): Promise<ImportResult> {
   }
 
   return { context: ourContext, nodes };
+}
+
+export async function importJsonLdDocument(
+  doc: JsonLdDocument,
+): Promise<GraphDocument> {
+  const { context, nodes } = await importJsonLd(doc);
+  return graphDocument(nodes, context);
 }
 
 function normalizeFlatten(flat: unknown): Array<Record<string, unknown>> {

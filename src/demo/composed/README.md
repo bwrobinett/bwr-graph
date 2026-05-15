@@ -11,17 +11,18 @@ One page, stacked panels:
 3. **Story** (`story-1`) — the same story from the Story tab.
 4. **GraphView** (`graph-view-1`) — the generic renderer.
 
-Each panel is a real `insertLink({ targetId, at: { nodeId: "composed-1", property: "panels" } })` against the `Composed` root. The merged registry routes each panel to the right component purely on `node.type`.
+Each panel is a real id in the `Composed` root's `panels` link list. The merged registry routes each panel to the right component purely on `node.type`.
 
 ## The cross-schema link
 
 The chat panel contains a system `Message` (`msg-composed-embed`) with a real `embed` link to `form-1`:
 
 ```ts
-store.dispatch(insertLink({
-  targetId: "form-1",
-  at: { nodeId: "msg-composed-embed", property: "embed" },
-}));
+{
+  id: "msg-composed-embed",
+  type: "Message",
+  embed: ["form-1"],
+}
 ```
 
 - `embed` is declared as a link property in `chatbotContext` (`{ "@type": "@id" }`).
@@ -33,7 +34,7 @@ Chatbot's `MessageView` doesn't know what a Form is. Form's `Form` component doe
 ## Files
 
 - `schema.ts` — `Composed` node type plus the `composedContext` (one link list: `panels`).
-- `seed.ts` — `seedComposed()` builds the `composed-1` root, the dedicated `conv-composed-1` conversation, and seeds the cross-schema embed.
+- `seed.ts` — `composedDocument()` returns the `composed-1` root, the dedicated `conv-composed-1` conversation, and the cross-schema embed as a portable graph document.
 - `components/ComposedView.tsx` — walks `panels` and dispatches each through `NodeRenderer`. Wraps each panel in a frame that shows the panel's node `type` as a badge, so the multi-schema composition is visually obvious.
 - `components/registry.ts` — registers `Composed` → `ComposedView` only. The composition magic is in `src/demo/registry.ts`'s merge.
 

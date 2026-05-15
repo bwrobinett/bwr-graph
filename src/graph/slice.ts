@@ -2,6 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type {
   GraphState,
   GraphNode,
+  GraphDocument,
   AddNodePayload,
   UpdateNodePayload,
   DeleteNodePayload,
@@ -111,6 +112,30 @@ const graphSlice = createSlice({
       const { context, merge } = action.payload;
       state.context = merge ? mergeContexts(state.context, context) : context;
     },
+
+    /**
+     * Merge a prepared graph document in one reducer pass. Context entries
+     * overlay the existing context, and document nodes upsert by id.
+     */
+    mergeGraph(state, action: PayloadAction<GraphDocument>) {
+      state.context = mergeContexts(state.context, action.payload.context);
+      for (const [id, node] of Object.entries(action.payload.nodes)) {
+        state.nodes[id] = { ...node };
+      }
+    },
+
+    /** Replace the entire graph with a prepared portable document. */
+    replaceGraph(_state, action: PayloadAction<GraphDocument>) {
+      return {
+        context: { ...action.payload.context },
+        nodes: Object.fromEntries(
+          Object.entries(action.payload.nodes).map(([id, node]) => [
+            id,
+            { ...node },
+          ]),
+        ),
+      };
+    },
   },
 });
 
@@ -121,6 +146,8 @@ export const {
   insertLink,
   removeLink,
   setContext,
+  mergeGraph,
+  replaceGraph,
 } = graphSlice.actions;
 
 /** The graph reducer — plug into a Redux store under any key (we use `graph`). */
