@@ -63,6 +63,16 @@ export interface GraphState {
 }
 
 /**
+ * Portable graph payload: the same flat dictionary + context shape as store
+ * state, but without any Redux coupling. Demo seeds, JSON-LD imports, and
+ * composition code can prepare one of these before touching the store.
+ */
+export interface GraphDocument {
+  nodes: Record<NodeId, GraphNode>;
+  context: JsonLdContext;
+}
+
+/**
  * Address of a slot inside a link array. `index` is optional — omit to mean
  * "the end" (insertLink) or "any matching entry" (removeLink).
  */

@@ -7,6 +7,8 @@ import {
   insertLink,
   removeLink,
   setContext,
+  mergeGraph,
+  replaceGraph,
 } from "./slice";
 import {
   selectNode,
@@ -162,6 +164,64 @@ describe("setContext", () => {
     let state = graphReducer(undefined, setContext({ context: { a: "@id" } }));
     state = graphReducer(state, setContext({ context: { b: "@id" }, merge: true }));
     expect(state.context).toEqual({ a: "@id", b: "@id" });
+  });
+});
+
+describe("bulk graph document actions", () => {
+  it("mergeGraph merges context and upserts nodes in one action", () => {
+    let state = graphReducer(
+      undefined,
+      mergeGraph({
+        context: { children: "@id" },
+        nodes: {
+          parent: { id: "parent", type: "Parent", children: ["child"] },
+          child: { id: "child", type: "Child", label: "before" },
+        },
+      }),
+    );
+
+    state = graphReducer(
+      state,
+      mergeGraph({
+        context: { parent: "@id" },
+        nodes: {
+          child: { id: "child", type: "Child", label: "after" },
+          grandchild: { id: "grandchild", type: "Child", parent: ["child"] },
+        },
+      }),
+    );
+
+    expect(state.context).toEqual({ children: "@id", parent: "@id" });
+    expect(state.nodes["child"].label).toBe("after");
+    expect(Object.keys(state.nodes).sort()).toEqual([
+      "child",
+      "grandchild",
+      "parent",
+    ]);
+  });
+
+  it("replaceGraph swaps out the whole graph", () => {
+    let state = graphReducer(
+      undefined,
+      addNode({ id: "old", type: "Old" }),
+    );
+
+    state = graphReducer(
+      state,
+      replaceGraph({
+        context: { next: "@id" },
+        nodes: {
+          next: { id: "next", type: "Next" },
+        },
+      }),
+    );
+
+    expect(state).toEqual({
+      context: { next: "@id" },
+      nodes: {
+        next: { id: "next", type: "Next" },
+      },
+    });
   });
 });
 

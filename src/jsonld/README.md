@@ -4,7 +4,7 @@ Boundary layer between RDF-style JSON-LD documents and the flat node dictionary.
 
 ## What's in here
 
-- `import.ts` — `importJsonLd(doc)`: runs `jsonld.flatten` on the input, walks each result to extract `@id` / `@type`, classifies properties via the `@context`, and returns `{ context, nodes }` ready to feed `addNode` + `setContext`.
+- `import.ts` — `importJsonLd(doc)`: runs `jsonld.flatten` on the input, walks each result to extract `@id` / `@type`, classifies properties via the `@context`, and returns `{ context, nodes }`. `importJsonLdDocument(doc)` wraps that result as a portable `GraphDocument` ready for `mergeGraph`.
 - `export.ts` — `exportJsonLd(state)`: turns the in-memory graph back into a JSON-LD document. Used by `/save` in the chatbot/story demos.
 - `import.test.ts`, `export.test.ts` — round-trip tests.
 

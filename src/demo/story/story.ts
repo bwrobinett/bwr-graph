@@ -1,9 +1,18 @@
 import { configureStore, type Store } from "@reduxjs/toolkit";
-import { graphReducer, addNode, insertLink, setContext } from "../../graph/slice";
+import {
+  graphReducer,
+  addNode,
+  insertLink,
+  setContext,
+  mergeGraph,
+} from "../../graph/slice";
 import { selectLinkedNodes, selectLinkedIds } from "../../graph/selectors";
 import type { GraphState, NodeId } from "../../graph/types";
 import { exportJsonLd } from "../../jsonld/export";
-import { importJsonLd, type JsonLdDocument } from "../../jsonld/import";
+import {
+  importJsonLdDocument,
+  type JsonLdDocument,
+} from "../../jsonld/import";
 import {
   storyContext,
   NODE_TYPE_STORY,
@@ -62,10 +71,10 @@ export async function loadStory(
   doc: JsonLdDocument,
   options: { storyId?: NodeId } = {},
 ): Promise<Story> {
-  const { context, nodes } = await importJsonLd(doc);
+  const graph = await importJsonLdDocument(doc);
+  const nodes = Object.values(graph.nodes);
   const store = configureStore({ reducer: { graph: graphReducer } });
-  store.dispatch(setContext({ context }));
-  for (const node of nodes) store.dispatch(addNode(node));
+  store.dispatch(mergeGraph(graph));
 
   const storyId =
     options.storyId ??
