@@ -3,9 +3,19 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && npm run build:lib && vite build",
+    "build:lib": "tsc -p tsconfig.lib.json",
+    "prepare": "npm run build:lib",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -17,10 +27,12 @@
     "@reduxjs/toolkit": "^2.2.7",
     "@types/jsonld": "^1.5.15",
     "jsonld": "^9.0.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-redux": "^9.1.2",
     "zod": "^4.4.3"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18",
+    "react-redux": ">=9"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.5.0",
@@ -33,6 +45,9 @@
     "jsdom": "^25.0.0",
     "typescript": "^5.5.4",
     "vite": "^5.4.6",
-    "vitest": "^2.1.1"
+    "vitest": "^2.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-redux": "^9.1.2"
   }
 }
