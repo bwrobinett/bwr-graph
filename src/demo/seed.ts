@@ -7,6 +7,7 @@ import { formExampleGraph } from "./form/formExampleGraph";
 import { graphViewExampleGraph } from "./graph-view/graphViewExampleGraph";
 import { store } from "./store";
 import { storyExampleGraph } from "./story/storyExampleGraph";
+import { tabManagerExampleGraph } from "./tab-manager/tabManagerExampleGraph";
 
 export function seedDemoGraph(): void {
   store.dispatch(
@@ -17,6 +18,7 @@ export function seedDemoGraph(): void {
         storyExampleGraph,
         graphViewExampleGraph,
         composedExampleGraph,
+        tabManagerExampleGraph,
         demoShellExampleGraph,
       ]),
     ),

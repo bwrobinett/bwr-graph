@@ -5,6 +5,7 @@ import { demoShellRegistry } from "./demo/components/registry";
 import { graphViewRegistry } from "./graph-view/components/registry";
 import { storyRegistry } from "./story/components/registry";
 import { composedRegistry } from "./composed/components/registry";
+import { tabManagerRegistry } from "./tab-manager/components/registry";
 
 /**
  * The demo's merged registry: meta-shell + every showcase. Single
@@ -20,4 +21,5 @@ export const mergedDemoRegistry: Registry = {
   ...graphViewRegistry,
   ...storyRegistry,
   ...composedRegistry,
+  ...tabManagerRegistry,
 };
