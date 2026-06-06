@@ -10,6 +10,7 @@ import { ChatbotConfigContext } from "../chatbot/components/ChatbotConfigContext
 import { stubResponder } from "../chatbot/responder";
 import { composedContext } from "./composedSchema";
 import { storyContext } from "../story/storySchema";
+import { storyWriterContext } from "../story-writer/storyWriterSchema";
 import { formContext } from "../form/formSchema";
 import { chatbotContext } from "../chatbot/chatbotSchema";
 import { demoShellContext } from "../demo/demoShellSchema";
@@ -28,6 +29,7 @@ function makeFullStore() {
   store.dispatch(setContext({ context: formContext }));
   store.dispatch(setContext({ context: chatbotContext, merge: true }));
   store.dispatch(setContext({ context: storyContext, merge: true }));
+  store.dispatch(setContext({ context: storyWriterContext, merge: true }));
   store.dispatch(setContext({ context: demoShellContext, merge: true }));
   store.dispatch(setContext({ context: graphViewContext, merge: true }));
   store.dispatch(setContext({ context: composedContext, merge: true }));
@@ -71,6 +73,22 @@ function makeFullStore() {
   // Graph-view root.
   store.dispatch(
     addNode({ id: "graph-view-1", type: "GraphView", title: "Graph view" }),
+  );
+
+  // Story-writer showcase root. Its runtime is tested in its own slice; here
+  // it proves the shell can route to another graph application via registry.
+  store.dispatch(
+    addNode({
+      id: "story-writer-1",
+      type: "StoryWriter",
+      title: "Short story writer",
+      prompt: "Write a tiny story.",
+      status: "complete",
+      storyIdeas: [],
+      finalStory: [],
+      logs: [],
+      generationNonce: 0,
+    }),
   );
 
   // Composed subgraph + cross-schema embed.
@@ -132,6 +150,7 @@ function makeFullStore() {
     { key: "form", label: "Form", targetId: "form-1" },
     { key: "chat", label: "Chat", targetId: "conv-1" },
     { key: "story", label: "Story", targetId: "story-1" },
+    { key: "story-writer", label: "Story Writer", targetId: "story-writer-1" },
     { key: "graph-view", label: "Graph View", targetId: "graph-view-1" },
     { key: "composed", label: "Composed", targetId: "composed-1" },
   ];
@@ -168,12 +187,13 @@ function renderShell(store: ReturnType<typeof makeFullStore>) {
 }
 
 describe("composed tab — full demo integration", () => {
-  it("renders all five tabs in the shell nav", () => {
+  it("renders every demo tab in the shell nav", () => {
     const store = makeFullStore();
     renderShell(store);
     expect(screen.getByTestId("tab-form")).toBeInTheDocument();
     expect(screen.getByTestId("tab-chat")).toBeInTheDocument();
     expect(screen.getByTestId("tab-story")).toBeInTheDocument();
+    expect(screen.getByTestId("tab-story-writer")).toBeInTheDocument();
     expect(screen.getByTestId("tab-graph-view")).toBeInTheDocument();
     expect(screen.getByTestId("tab-composed")).toBeInTheDocument();
   });

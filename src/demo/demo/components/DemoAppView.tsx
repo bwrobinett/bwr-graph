@@ -11,6 +11,8 @@ import { NodeRenderer } from "../../../renderer/NodeRenderer";
  * graph: this component reads the `tabs` link list + scalar `activeDemo` key
  * off the `DemoApp` node, walks the tabs to find the active one, and hands
  * its `target` (the root node id of a showcase) to a child `NodeRenderer`.
+ * Non-visual runtime roots are graph links too, so the shell can keep
+ * process-like nodes mounted without hardcoding them in `App.tsx`.
  *
  * No `useState` / `useEffect` / hash listening — that's all in the store
  * subscriber (see `../hashSync.ts`).
@@ -19,6 +21,10 @@ export function DemoAppView({ nodeId }: { nodeId: string }) {
   const node = useSelector((s: RootState) => selectNode(s, nodeId));
   const tabIds = useSelector(
     (s: RootState) => selectLinkedIds(s, nodeId, "tabs"),
+    shallowArrayEqual,
+  );
+  const runtimeRootIds = useSelector(
+    (s: RootState) => selectLinkedIds(s, nodeId, "runtimeRoots"),
     shallowArrayEqual,
   );
   const activeDemo = useSelector(
@@ -44,6 +50,9 @@ export function DemoAppView({ nodeId }: { nodeId: string }) {
 
   return (
     <main data-testid={`demo-app-${nodeId}`} style={shellStyle}>
+      {runtimeRootIds.map((id) => (
+        <NodeRenderer key={id} nodeId={id} />
+      ))}
       <header style={{ marginBottom: 16 }}>
         <h1 style={{ margin: 0 }}>{String(node.title ?? "bwr-graph demo")}</h1>
         <nav style={navStyle} data-testid={`demo-app-${nodeId}-nav`}>

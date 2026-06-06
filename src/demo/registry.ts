@@ -3,6 +3,7 @@ import { formRegistry } from "./form/components/registry";
 import { chatbotRegistry } from "./chatbot/components/registry";
 import { demoShellRegistry } from "./demo/components/registry";
 import { graphViewRegistry } from "./graph-view/components/registry";
+import { storyWriterRegistry } from "./story-writer/components/registry";
 import { storyRegistry } from "./story/components/registry";
 import { composedRegistry } from "./composed/components/registry";
 import { tabManagerRegistry } from "./tab-manager/components/registry";
@@ -20,6 +21,7 @@ export const mergedDemoRegistry: Registry = {
   ...chatbotRegistry,
   ...graphViewRegistry,
   ...storyRegistry,
+  ...storyWriterRegistry,
   ...composedRegistry,
   ...tabManagerRegistry,
 };

@@ -22,6 +22,8 @@ describe("seedDemoGraph (production boot)", () => {
     expect(nodes["form-1"]).toBeDefined();
     expect(nodes["conv-1"]).toBeDefined();
     expect(nodes["story-1"]).toBeDefined();
+    expect(nodes["story-writer-1"]).toBeDefined();
+    expect(nodes["story-writer-runtime-1"]).toBeDefined();
     expect(nodes["graph-view-1"]).toBeDefined();
     expect(nodes["composed-1"]).toBeDefined();
     expect(nodes["tab-manager-1"]).toBeDefined();
@@ -33,10 +35,12 @@ describe("seedDemoGraph (production boot)", () => {
       "tab-form",
       "tab-chat",
       "tab-story",
+      "tab-story-writer",
       "tab-graph-view",
       "tab-composed",
       "tab-tab-manager",
     ]);
+    expect(nodes["app-1"].runtimeRoots).toEqual(["story-writer-runtime-1"]);
 
     // The cross-schema link landed: msg-composed-embed.embed → form-1.
     const embedMsg = nodes["msg-composed-embed"];

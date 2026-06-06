@@ -7,6 +7,8 @@ import type { JsonLdContext } from "../../graph/types";
 //
 // Links:
 // - `tabs` (DemoApp → DemoTab[]): the nav order, ordered list.
+// - `runtimeRoots` (DemoApp → runtime nodes): non-visual graph processes the
+//   shell keeps mounted alongside the visible showcase.
 // - `target` (DemoTab → showcase root): which subgraph this tab activates
 //   (`form-1`, `conv-1`, …).
 // - `app` (DemoTab → DemoApp): back-ref so a tab can dispatch updates against
@@ -14,6 +16,7 @@ import type { JsonLdContext } from "../../graph/types";
 export const demoShellContext = {
   "@vocab": "http://bwr-graph.example/demo-shell/",
   tabs: { "@type": "@id", "@container": "@list" },
+  runtimeRoots: { "@type": "@id", "@container": "@list" },
   target: { "@type": "@id" },
   app: { "@type": "@id" },
 } satisfies JsonLdContext;
@@ -24,6 +27,7 @@ export const demoAppNodeSchema = z.object({
   title: z.string(),
   tabs: z.array(z.string()),
   activeDemo: z.string(),
+  runtimeRoots: z.array(z.string()).optional(),
 });
 
 export const demoTabNodeSchema = z.object({

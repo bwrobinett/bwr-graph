@@ -11,10 +11,12 @@ export const demoShellExampleGraph = {
         "tab-form",
         "tab-chat",
         "tab-story",
+        "tab-story-writer",
         "tab-graph-view",
         "tab-composed",
         "tab-tab-manager",
       ],
+      runtimeRoots: ["story-writer-runtime-1"],
       activeDemo: "form",
     },
     "tab-form": {
@@ -39,6 +41,14 @@ export const demoShellExampleGraph = {
       key: "story",
       label: "Story",
       target: ["story-1"],
+      app: ["app-1"],
+    },
+    "tab-story-writer": {
+      id: "tab-story-writer",
+      type: "DemoTab",
+      key: "story-writer",
+      label: "Story Writer",
+      target: ["story-writer-1"],
       app: ["app-1"],
     },
     "tab-graph-view": {
