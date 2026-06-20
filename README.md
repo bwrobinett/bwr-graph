@@ -4,7 +4,7 @@ A universal graph store: Redux reducers + JSON-LD + a flat node dictionary, pair
 
 ## What this is
 
-State is one flat map of nodes — every reference is an id pointing at another entry, never a nested object. Five scalar reducer actions (`addNode`, `updateNode`, `deleteNode`, `insertLink`, `removeLink`) plus `setContext` cover local edits; `mergeGraph` / `replaceGraph` load portable `GraphDocument` payloads in bulk. JSON-LD lives at the I/O boundary: `importJsonLd` flattens nested docs into the dictionary; `exportJsonLd` produces a portable doc back out. A `NodeRenderer` turns any node into a React component via a type-keyed registry.
+State is one flat map of nodes — every reference is an id pointing at another entry, never a nested object. Five scalar reducer actions (`addNode`, `updateNode`, `removeNode`, `addLink`, `removeLink`) plus `setContext` cover local edits; `mergeGraph` / `replaceGraph` load portable `GraphDocument` payloads in bulk. JSON-LD lives at the I/O boundary: `importJsonLd` flattens nested docs into the dictionary; `exportJsonLd` produces a portable doc back out. A `NodeRenderer` turns any node into a React component via a type-keyed registry. Older names `deleteNode` and `insertLink` are still exported as deprecated compatibility aliases.
 
 The architectural claim: the same foundation works for any graph shape and any UI surface. So far that's been exercised by:
 

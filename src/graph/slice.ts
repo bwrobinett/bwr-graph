@@ -142,13 +142,23 @@ const graphSlice = createSlice({
 export const {
   addNode,
   updateNode,
-  deleteNode,
-  insertLink,
   removeLink,
   setContext,
   mergeGraph,
   replaceGraph,
 } = graphSlice.actions;
+
+/** @deprecated Use `removeNode` for add/remove terminology consistency. */
+export const deleteNode = graphSlice.actions.deleteNode;
+
+/** @deprecated Use `addLink` for add/remove terminology consistency. */
+export const insertLink = graphSlice.actions.insertLink;
+
+/** Preferred name for removing a node from the graph. */
+export const removeNode = deleteNode;
+
+/** Preferred name for adding a link to a graph node property. */
+export const addLink = insertLink;
 
 /** The graph reducer — plug into a Redux store under any key (we use `graph`). */
 export const graphReducer = graphSlice.reducer;

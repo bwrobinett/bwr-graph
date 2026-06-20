@@ -6,7 +6,7 @@ The core: a flat node dictionary managed by Redux Toolkit, with JSON-LD-style `@
 
 - `types.ts` — `GraphNode`, `GraphState`, `GraphDocument`, `JsonLdContext`, `LinkLocation`, action payload types.
 - `document.ts` — small helpers for building and composing portable graph documents.
-- `slice.ts` — the Redux slice. Five scalar actions (`addNode`, `updateNode`, `deleteNode`, `insertLink`, `removeLink`), `setContext`, and bulk `mergeGraph` / `replaceGraph`. Exports `graphReducer`.
+- `slice.ts` — the Redux slice. Five scalar actions (`addNode`, `updateNode`, `removeNode`, `addLink`, `removeLink`), `setContext`, and bulk `mergeGraph` / `replaceGraph`. Exports `graphReducer`. `deleteNode` and `insertLink` remain as deprecated compatibility aliases.
 - `context.ts` — `isLinkProperty` / `isOrderedProperty` — the only place the `@context` is interpreted.
 - `selectors.ts` — `selectNode`, `selectLinkedNodes`, `selectLinkedIds`, `makeSelectNodesByType`, `selectSubtreeIds`.
 - `slice.test.ts` — reducer tests.
