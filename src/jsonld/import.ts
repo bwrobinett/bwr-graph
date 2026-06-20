@@ -5,7 +5,7 @@ import type {
   JsonLdContext,
   ContextEntry,
   NodePropertyValue,
-  Primitive,
+  JsonValue,
 } from "../graph/types";
 import { stripIdTypeAliases } from "../graph/context";
 import { graphDocument } from "../graph/document";
@@ -194,7 +194,7 @@ function convertValue(value: unknown, declaredLink: boolean): ConvertedValue {
     "@value" in value
   ) {
     const v = (value as Record<string, unknown>)["@value"];
-    return { value: toPrimitive(v), isLink: false };
+    return { value: toJsonValue(v), isLink: false };
   }
 
   // {"@id": "..."} → singleton link array
@@ -224,7 +224,7 @@ function convertValue(value: unknown, declaredLink: boolean): ConvertedValue {
     return { value, isLink: false };
   }
 
-  return { value: toPrimitive(value), isLink: false };
+  return { value: toJsonValue(value), isLink: false };
 }
 
 function convertArray(
@@ -252,8 +252,8 @@ function convertArray(
 
   if (allLinks) return { value: ids, isLink: true };
 
-  // Literal array — unwrap value objects, keep primitives.
-  const primitives: Primitive[] = [];
+  // Literal array — unwrap value objects, preserve JSON-compatible values.
+  const values: JsonValue[] = [];
   for (const v of arr) {
     if (
       typeof v === "object" &&
@@ -261,28 +261,21 @@ function convertArray(
       !Array.isArray(v) &&
       "@value" in v
     ) {
-      primitives.push(toPrimitive((v as Record<string, unknown>)["@value"]));
+      values.push(toJsonValue((v as Record<string, unknown>)["@value"]));
       continue;
     }
-    if (
-      v === null ||
-      typeof v === "string" ||
-      typeof v === "number" ||
-      typeof v === "boolean"
-    ) {
-      primitives.push(v);
-    }
+    values.push(toJsonValue(v));
   }
   // Expanded JSON-LD pads single literal values into singleton arrays. That's
   // structural, not semantic — unwrap so a scalar in source is a scalar in
   // graph state. (Multi-element literal arrays remain arrays.)
-  if (primitives.length === 1) {
-    return { value: primitives[0], isLink: false };
+  if (values.length === 1) {
+    return { value: values[0], isLink: false };
   }
-  return { value: primitives, isLink: false };
+  return { value: values, isLink: false };
 }
 
-function toPrimitive(value: unknown): Primitive {
+function toJsonValue(value: unknown): JsonValue {
   if (
     typeof value === "string" ||
     typeof value === "number" ||
@@ -291,6 +284,14 @@ function toPrimitive(value: unknown): Primitive {
   ) {
     return value;
   }
-  if (value === undefined) return null;
-  return String(value);
+  if (Array.isArray(value)) return value.map(toJsonValue);
+  if (typeof value === "object" && value !== null) {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>).map(([key, nested]) => [
+        key,
+        toJsonValue(nested),
+      ]),
+    );
+  }
+  return null;
 }

@@ -13,20 +13,27 @@
 /** Stable identifier for a node. Strings so they can carry IRIs or short ids. */
 export type NodeId = string;
 
-/** A leaf value on a node — anything that isn't a link to another node. */
+/** A leaf value on a node — anything that isn't structured JSON. */
 export type Primitive = string | number | boolean | null;
 
 /**
- * A node property's value. Arrays are ambiguous at the type level — they may be
- * link arrays (NodeId[]) or literal arrays (Primitive[]). The @context resolves
- * the ambiguity at the selector layer; the reducer treats both as plain arrays.
+ * JSON-compatible literal data stored on a node. Link arrays are represented as
+ * strings at runtime too; the @context decides whether a string array is graph
+ * structure or literal data.
  */
-export type NodePropertyValue = Primitive | Primitive[] | NodeId[];
+export type JsonValue = Primitive | JsonValue[] | object;
+
+/**
+ * A node property's value. The reducer stores JSON-compatible values verbatim.
+ * Selectors and JSON-LD helpers use @context to interpret which properties are
+ * links (`@type: @id`) and which are literal JSON.
+ */
+export type NodePropertyValue = JsonValue;
 
 /**
  * A graph node. Required keys are `id` and `type`; everything else is open —
- * literals are stored bare, links are stored as `NodeId[]` (always arrays,
- * even singletons).
+ * literals are stored bare, links are stored as `NodeId[]` by convention
+ * (always arrays, even singletons).
  */
 export interface GraphNode {
   id: NodeId;
