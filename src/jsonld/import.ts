@@ -269,8 +269,9 @@ function convertArray(
   // Expanded JSON-LD pads single literal values into singleton arrays. That's
   // structural, not semantic — unwrap so a scalar in source is a scalar in
   // graph state. (Multi-element literal arrays remain arrays.)
-  if (values.length === 1) {
-    return { value: values[0], isLink: false };
+  const [onlyValue] = values;
+  if (onlyValue !== undefined && values.length === 1) {
+    return { value: onlyValue, isLink: false };
   }
   return { value: values, isLink: false };
 }
